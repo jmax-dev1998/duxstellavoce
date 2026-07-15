@@ -4,10 +4,13 @@ import {
   auth,
   db,
   doc,
+  getDoc,
   setDoc,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut,
 } from "../firebase";
 
@@ -37,9 +40,24 @@ export const useAuthStore = defineStore("auth", () => {
     });
   };
 
+  const googleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+    const userDoc = doc(db, "users", cred.user.uid);
+    const snap = await getDoc(userDoc);
+    if (!snap.exists()) {
+      await setDoc(userDoc, {
+        name: cred.user.displayName || cred.user.email.split("@")[0],
+        email: cred.user.email,
+        avatar: cred.user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(cred.user.displayName || cred.user.email)}&background=ffd700&color=1a1a2e&size=200`,
+        role: "guest",
+      });
+    }
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
 
-  return { user, loading, init, login, register, logout };
+  return { user, loading, init, login, register, googleLogin, logout };
 });
