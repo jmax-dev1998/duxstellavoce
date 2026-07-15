@@ -9,42 +9,47 @@
     </div>
 
     <div class="container py-5">
-      <div class="text-center mb-5">
-        <div class="role-pills">
-          <button
-            class="btn role-pill"
-            :class="activeFilter === 'All' ? 'active' : ''"
-            @click="activeFilter = 'All'"
-          >
-            <i class="bi bi-people me-1"></i>All Members
-          </button>
-          <button
-            class="btn role-pill role-soprano"
-            :class="activeFilter === 'Soprano' ? 'active' : ''"
-            @click="activeFilter = 'Soprano'"
-          >
-            <i class="bi bi-music-note me-1"></i>Soprano
-          </button>
-          <button
-            class="btn role-pill role-alto"
-            :class="activeFilter === 'Alto' ? 'active' : ''"
-            @click="activeFilter = 'Alto'"
-          >
-            <i class="bi bi-music-note me-1"></i>Alto
-          </button>
-          <button
-            class="btn role-pill role-tenor"
-            :class="activeFilter === 'Tenor' ? 'active' : ''"
-            @click="activeFilter = 'Tenor'"
-          >
-            <i class="bi bi-music-note me-1"></i>Tenor
-          </button>
-          <button
-            class="btn role-pill role-bass"
-            :class="activeFilter === 'Bass' ? 'active' : ''"
-            @click="activeFilter = 'Bass'"
-          >
-            <i class="bi bi-music-note me-1"></i>Bass
+      <div class="mb-4">
+        <div class="d-flex flex-wrap justify-content-center justify-content-lg-between align-items-center gap-2">
+          <div class="role-pills">
+            <button
+              class="btn role-pill"
+              :class="activeFilter === 'All' ? 'active' : ''"
+              @click="activeFilter = 'All'"
+            >
+              <i class="bi bi-people me-1"></i>All Members
+            </button>
+            <button
+              class="btn role-pill role-soprano"
+              :class="activeFilter === 'Soprano' ? 'active' : ''"
+              @click="activeFilter = 'Soprano'"
+            >
+              <i class="bi bi-music-note me-1"></i>Soprano
+            </button>
+            <button
+              class="btn role-pill role-alto"
+              :class="activeFilter === 'Alto' ? 'active' : ''"
+              @click="activeFilter = 'Alto'"
+            >
+              <i class="bi bi-music-note me-1"></i>Alto
+            </button>
+            <button
+              class="btn role-pill role-tenor"
+              :class="activeFilter === 'Tenor' ? 'active' : ''"
+              @click="activeFilter = 'Tenor'"
+            >
+              <i class="bi bi-music-note me-1"></i>Tenor
+            </button>
+            <button
+              class="btn role-pill role-bass"
+              :class="activeFilter === 'Bass' ? 'active' : ''"
+              @click="activeFilter = 'Bass'"
+            >
+              <i class="bi bi-music-note me-1"></i>Bass
+            </button>
+          </div>
+          <button v-if="isAdminOrManager" class="btn btn-gold w-100 w-lg-auto" @click="openAddForm">
+            <i class="bi bi-plus-lg me-1"></i>Add Member
           </button>
         </div>
       </div>
@@ -74,6 +79,14 @@
               </div>
             </div>
             <div class="card-footer bg-white border-0 text-center pt-0">
+              <div v-if="isAdminOrManager" class="d-flex gap-2 justify-content-center mb-2">
+                <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(member)" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
               <button
                 class="btn btn-outline-gold btn-sm px-4"
                 @click="selectedMember = member"
@@ -128,26 +141,140 @@
           </div>
         </div>
       </div>
+
+      <!-- Add / Edit Member Modal -->
+      <div class="modal fade" id="memberFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content" style="border: none; border-radius: 16px;">
+            <div class="modal-header border-0">
+              <h5 class="modal-title fw-bold">{{ editingId ? 'Edit Member' : 'Add Member' }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="saveMember">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Name</label>
+                  <input v-model="form.name" class="form-control" required placeholder="Full name" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Role</label>
+                  <select v-model="form.role" class="form-select" required>
+                    <option value="" disabled>Select voice role...</option>
+                    <option>Soprano</option>
+                    <option>Alto</option>
+                    <option>Tenor</option>
+                    <option>Bass</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Image URL</label>
+                  <input v-model="form.image" class="form-control" placeholder="https://..." />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Bio</label>
+                  <textarea v-model="form.bio" class="form-control" rows="3" placeholder="Short description"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Join Date</label>
+                  <input v-model="form.joinDate" type="date" class="form-control" required />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer border-0 justify-content-center gap-2">
+              <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                <i class="bi bi-x-lg me-1"></i>Cancel
+              </button>
+              <button type="button" class="btn btn-gold" @click="saveMember">
+                <i class="bi bi-check-lg me-1"></i>{{ editingId ? 'Update' : 'Save' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
-import { useChoirStore } from "../stores/choir";
+import { ref, computed, onMounted, watch } from "vue";
+import { useAuthStore } from "../stores/auth";
+import { db } from "../firebase";
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, orderBy } from "firebase/firestore";
+import { Modal } from "bootstrap";
 
 export default {
   name: "MembersView",
   setup() {
-    const choirStore = useChoirStore();
+    const authStore = useAuthStore();
     const activeFilter = ref("All");
     const selectedMember = ref(null);
     const membersGrid = ref(null);
+    const members = ref([]);
+    const form = ref({ name: "", role: "", image: "", bio: "", joinDate: "" });
+    const editingId = ref(null);
+    const userRole = ref(null);
+
+    let formModal = null;
+
+    const isAdminOrManager = computed(() => userRole.value === "admin" || userRole.value === "manager");
 
     const filteredMembers = computed(() => {
-      if (activeFilter.value === "All") return choirStore.members;
-      return choirStore.members.filter((m) => m.role === activeFilter.value);
+      if (activeFilter.value === "All") return members.value;
+      return members.value.filter((m) => m.role === activeFilter.value);
     });
+
+    const fetchMembers = async () => {
+      const q = query(collection(db, "members"), orderBy("name"));
+      const snap = await getDocs(q);
+      members.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    };
+
+    const fetchUserRole = async (uid) => {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        if (snap.exists()) userRole.value = snap.data().role;
+      } catch {
+        userRole.value = null;
+      }
+    };
+
+    const openAddForm = () => {
+      editingId.value = null;
+      form.value = { name: "", role: "", image: "", bio: "", joinDate: new Date().toISOString().split("T")[0] };
+      formModal.show();
+    };
+
+    const openEditForm = (member) => {
+      editingId.value = member.id;
+      form.value = { name: member.name, role: member.role, image: member.image || "", bio: member.bio || "", joinDate: member.joinDate };
+      formModal.show();
+    };
+
+    const saveMember = async () => {
+      try {
+        const data = { name: form.value.name, role: form.value.role, image: form.value.image, bio: form.value.bio, joinDate: form.value.joinDate };
+        if (editingId.value) {
+          await updateDoc(doc(db, "members", editingId.value), data);
+        } else {
+          await addDoc(collection(db, "members"), data);
+        }
+        formModal.hide();
+        await fetchMembers();
+      } catch (e) {
+        console.error("Failed to save member:", e);
+      }
+    };
+
+    const confirmDelete = async (member) => {
+      if (confirm(`Delete member "${member.name}"?`)) {
+        try {
+          await deleteDoc(doc(db, "members", member.id));
+          await fetchMembers();
+        } catch (e) {
+          console.error("Failed to delete member:", e);
+        }
+      }
+    };
 
     const formatDate = (date) => {
       return new Date(date).toLocaleDateString("en-US", {
@@ -161,12 +288,17 @@ export default {
       return colors[role] || "secondary";
     };
 
-    onMounted(() => {
+    watch(() => authStore.user, (newUser) => {
+      if (newUser) fetchUserRole(newUser.uid);
+      else userRole.value = null;
+    });
+
+    onMounted(async () => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add('revealed');
+              entry.target.classList.add("revealed");
               observer.unobserve(entry.target);
             }
           });
@@ -174,9 +306,15 @@ export default {
         { threshold: 0.1 }
       );
       if (membersGrid.value) observer.observe(membersGrid.value);
+
+      await fetchMembers();
+
+      if (authStore.user) await fetchUserRole(authStore.user.uid);
+
+      formModal = new Modal(document.getElementById("memberFormModal"));
     });
 
-    return { choirStore, activeFilter, selectedMember, membersGrid, filteredMembers, formatDate, getRoleColor };
+    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor };
   },
 };
 </script>

@@ -17,16 +17,15 @@
       <button
         class="navbar-toggler"
         type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
+        @click="toggleCollapse"
         aria-controls="navbarNav"
-        aria-expanded="false"
+        :aria-expanded="String(collapseOpen)"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse" id="navbarNav" ref="collapseEl">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" v-for="link in navLinks" :key="link.to">
             <router-link
@@ -34,6 +33,7 @@
               :to="link.to"
               :exact-active-class="link.exact ? 'active' : ''"
               :active-class="!link.exact ? 'active' : ''"
+              @click="closeNav"
             >
               <i :class="link.icon" class="me-1"></i>{{ link.label }}
             </router-link>
@@ -42,18 +42,36 @@
           <li class="nav-item ms-lg-3" v-if="!authStore.loading">
             <hr class="dropdown-divider d-lg-none my-2" />
             <template v-if="authStore.user">
-              <span class="nav-link text-gold d-none d-lg-inline">
-                <i class="bi bi-person-circle me-1"></i>{{ authStore.user.email }}
-              </span>
-              <router-link class="nav-link d-lg-none" to="/">
-                <i class="bi bi-person-circle me-1"></i>{{ authStore.user.email }}
+              <!-- Desktop: avatar dropdown -->
+              <div class="dropdown d-none d-lg-block">
+                <a class="nav-link dropdown-toggle p-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img :src="avatarUrl" class="rounded-circle" width="34" height="34" :alt="userName" style="object-fit: cover; border: 2px solid var(--gold);" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 12px; border: 1px solid rgba(255,215,0,0.2); background: rgba(26,26,46,0.98); backdrop-filter: blur(20px);">
+                  <li>
+                    <router-link class="dropdown-item text-white" to="/profile" @click="closeNav" style="border-radius: 8px;">
+                      <i class="bi bi-person me-2"></i>Profile
+                    </router-link>
+                  </li>
+                  <li><hr class="dropdown-divider" style="border-color: rgba(255,255,255,0.1);" /></li>
+                  <li>
+                    <a class="dropdown-item text-white" href="#" @click.prevent="handleLogout" style="border-radius: 8px;">
+                      <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <!-- Mobile: inline links -->
+              <router-link class="nav-link d-lg-none" to="/profile" @click="closeNav">
+                <img :src="avatarUrl" class="rounded-circle me-1" width="20" height="20" :alt="userName" style="object-fit: cover;" />
+                Profile
               </router-link>
-              <button class="nav-link btn-logout" @click="handleLogout">
+              <button class="nav-link btn-logout d-lg-none" @click="handleLogout">
                 <i class="bi bi-box-arrow-right me-1"></i>Logout
               </button>
             </template>
             <template v-else>
-              <router-link class="nav-link btn-gold-nav" to="/login">
+              <router-link class="nav-link btn-gold-nav" to="/login" @click="closeNav">
                 <i class="bi bi-box-arrow-in-right me-1"></i>Login
               </router-link>
             </template>
@@ -65,9 +83,11 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
+import { db, doc, getDoc } from "../firebase";
+import { Collapse } from "bootstrap";
 
 export default {
   name: "NavbarComponent",
@@ -76,7 +96,13 @@ export default {
     const router = useRouter();
     const authStore = useAuthStore();
     const scrolled = ref(false);
+    const collapseEl = ref(null);
+    const collapseOpen = ref(false);
+    const userAvatar = ref("");
+    const userName = ref("");
     const isHome = computed(() => route.path === "/");
+
+    let bsCollapse = null;
 
     const navLinks = [
       { to: "/", label: "Home", icon: "bi bi-house-door", exact: true },
@@ -87,29 +113,67 @@ export default {
       { to: "/about", label: "About", icon: "bi bi-info-circle", exact: false },
     ];
 
+    const avatarUrl = computed(() => {
+      if (userAvatar.value) return userAvatar.value;
+      if (authStore.user?.photoURL) return authStore.user.photoURL;
+      const name = userName.value || authStore.user?.email || "User";
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ffd700&color=1a1a2e&size=40`;
+    });
+
+    const fetchUserProfile = async (uid) => {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          userAvatar.value = data.avatar || "";
+          userName.value = data.name || "";
+        }
+      } catch {
+        // fallback to auth data
+      }
+    };
+
     const handleScroll = () => {
       scrolled.value = window.scrollY > 50;
     };
 
+    const toggleCollapse = () => {
+      if (bsCollapse) bsCollapse.toggle();
+    };
+
+    const closeNav = () => {
+      if (bsCollapse && collapseOpen.value) bsCollapse.hide();
+    };
+
     const handleLogout = async () => {
       await authStore.logout();
-      const collapse = document.getElementById("navbarNav");
-      if (collapse && collapse.classList.contains("show")) {
-        const bsCollapse = bootstrap.Collapse.getInstance(collapse);
-        if (bsCollapse) bsCollapse.hide();
-      }
+      closeNav();
       router.push("/");
     };
 
+    watch(() => authStore.user, (newUser) => {
+      if (newUser) fetchUserProfile(newUser.uid);
+      else { userAvatar.value = ""; userName.value = ""; }
+    });
+
     onMounted(() => {
       window.addEventListener("scroll", handleScroll, { passive: true });
+
+      if (authStore.user) fetchUserProfile(authStore.user.uid);
+
+      if (collapseEl.value) {
+        bsCollapse = new Collapse(collapseEl.value, { toggle: false });
+        collapseEl.value.addEventListener("shown.bs.collapse", () => { collapseOpen.value = true; });
+        collapseEl.value.addEventListener("hidden.bs.collapse", () => { collapseOpen.value = false; });
+      }
     });
 
     onUnmounted(() => {
       window.removeEventListener("scroll", handleScroll);
+      if (bsCollapse) bsCollapse.dispose();
     });
 
-    return { scrolled, navLinks, isHome, authStore, handleLogout };
+    return { scrolled, collapseEl, collapseOpen, userAvatar, userName, avatarUrl, navLinks, isHome, authStore, toggleCollapse, closeNav, handleLogout };
   },
 };
 </script>
