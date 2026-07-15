@@ -211,4 +211,44 @@ export default {
 .diff-beginner { background: rgba(25, 135, 84, 0.12); color: #198754; }
 .diff-intermediate { background: rgba(255, 193, 7, 0.12); color: #cc9a06; }
 .diff-advanced { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
+
+@media (max-width: 768px) {
+  .search-input,
+  .form-select-custom {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+  .library-table thead th {
+    padding: 12px 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .library-row td {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  .genre-badge,
+  .difficulty-badge {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .library-table thead th {
+    font-size: 0.7rem;
+    padding: 10px 6px;
+  }
+  .library-row td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  .library-row td .btn-sm {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+  .library-row td .bi-music-note {
+    display: none;
+  }
+}
 </style>

@@ -205,4 +205,28 @@ export default {
 .gallery-card:hover .gallery-card-content {
   transform: translateY(0);
 }
+
+@media (max-width: 768px) {
+  .filter-pill {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+  .gallery-card img {
+    height: 250px;
+  }
+}
+
+@media (max-width: 576px) {
+  .gallery-card img {
+    height: 220px;
+  }
+  .gallery-card-overlay {
+    opacity: 1;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 50%);
+  }
+  .gallery-card-content {
+    transform: translateY(0);
+  }
+}
 </style>

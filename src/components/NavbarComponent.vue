@@ -11,7 +11,7 @@
             class="d-inline-block align-text-top me-2 brand-logo"
           />
         </div>
-        <span class="fw-bold brand-text">Dux <span class="gold-text">Stella</span> Voce</span>
+        <span class="fw-bold brand-text" :class="{ 'brand-text-hidden': isHome && !scrolled }">Dux <span class="gold-text">Stella</span> Voce</span>
       </router-link>
 
       <button
@@ -84,9 +84,10 @@ export default {
 <style scoped>
 .navbar {
   padding: 12px 0;
-  background: transparent;
-  transition: var(--transition-smooth);
+  background: rgba(26, 26, 46, 0);
+  transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .navbar-scrolled {
@@ -119,6 +120,13 @@ export default {
   font-size: 1.4rem;
   letter-spacing: 1px;
   color: #fff;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.brand-text-hidden {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
 }
 
 .gold-text {
@@ -174,6 +182,12 @@ export default {
 }
 
 @media (max-width: 991.98px) {
+  .navbar {
+    padding: 10px 0;
+  }
+  .navbar-brand span {
+    font-size: 1.1rem;
+  }
   .navbar-collapse {
     background: rgba(26, 26, 46, 0.98);
     backdrop-filter: blur(20px);
@@ -181,6 +195,23 @@ export default {
     padding: 16px;
     margin-top: 12px;
     border: 1px solid rgba(255, 215, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .nav-link {
+    padding: 10px 16px;
+    margin: 2px 0;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar-brand span {
+    font-size: 0.95rem;
+  }
+  .brand-logo {
+    width: 32px !important;
+    height: 32px !important;
   }
 }
 </style>

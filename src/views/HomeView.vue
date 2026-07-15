@@ -10,11 +10,12 @@
         <div class="row justify-content-center">
           <div class="col-lg-8 text-center">
             <p class="hero-subtitle text-gold fw-semibold mb-3 reveal-hero">DUX STELLA VOCE</p>
-            <h1 class="display-2 fw-bold mb-4 reveal-hero" style="font-family: 'Playfair Display', Georgia, serif;">
+            <h1 class="display-2 fw-bold mb-4 reveal-hero" style='font-family: "Playfair Display", Georgia, serif'>
               Where Voices<br /><span class="gold-gradient-text">Elevate</span> the Soul
             </h1>
             <p class="lead mb-5 text-white-50 reveal-hero" style="animation-delay: 0.2s">
-              Experience the power of unified voices creating extraordinary musical moments that transcend the ordinary
+              Experience the power of unified voices creating extraordinary musical moments that
+              transcend the ordinary
             </p>
             <div class="hero-buttons reveal-hero" style="animation-delay: 0.4s">
               <router-link to="/events" class="btn btn-gold btn-lg me-3 px-4">
@@ -43,13 +44,14 @@
             <p class="text-gold fw-semibold mb-2 reveal">Our Story</p>
             <h2 class="section-title reveal">About Our Choir</h2>
             <p class="lead text-muted reveal">
-              Founded in 2015, Harmony Voices has grown from a small community ensemble to a
+              Founded in 2022, Dux Stella Voce has grown from a small community ensemble to a
               renowned choir performing at prestigious venues worldwide.
             </p>
             <p class="reveal">
-              Our diverse repertoire spans classical masterpieces, contemporary works, and
-              innovative arrangements. We believe in the transformative power of choral music to
-              inspire, unite, and elevate communities across the globe.
+              Dux Stella Voce is an independent choir consisting of alumni from several student
+              choirs all around Indonesia. Based on their longing of singing together in group, Dux
+              Stella Voce was formed as a means of letting go boredom of its member in living their
+              daily busy lives.
             </p>
             <div class="d-flex gap-3 mt-4 reveal">
               <router-link to="/about" class="btn btn-gold">
@@ -63,13 +65,10 @@
           <div class="col-lg-6">
             <div class="about-image-wrapper reveal-right">
               <div class="about-image-decoration"></div>
-              <img
-                src="https://picsum.photos/600/400?random=20"
-                alt="Choir Performance"
-                class="img-fluid rounded-3 shadow-lg about-image"
-              />
+              <img src="/melcin_dsv.png" alt="Choir Performance"
+                class="img-fluid rounded-3 shadow-lg about-image" />
               <div class="about-experience-badge">
-                <span class="display-5 fw-bold gold-gradient-text">12+</span>
+                <span class="display-5 fw-bold gold-gradient-text">4+</span>
                 <span class="d-block text-white-50">Years of<br />Excellence</span>
               </div>
             </div>
@@ -106,24 +105,20 @@
         </div>
         <div class="row stagger-children" ref="voiceGrid">
           <div class="col-md-3 mb-4" v-for="(count, role) in choirStore.memberRoles" :key="role">
-            <div
-              class="card border-0 shadow-sm text-center h-100 role-card"
-              v-if="role !== 'total'"
-            >
+            <div class="card border-0 shadow-sm text-center h-100 role-card" v-if="role !== 'total'">
               <div class="card-body py-4">
                 <div class="role-icon mb-3">
                   <div class="role-icon-circle" :class="'role-' + role">
                     <i class="bi bi-music-note fs-2"></i>
                   </div>
                 </div>
-                <h3 class="fw-bold display-5 mb-1" :class="'text-' + getRoleColor(role)">{{ count }}</h3>
+                <h3 class="fw-bold display-5 mb-1" :class="'text-' + getRoleColor(role)">
+                  {{ count }}
+                </h3>
                 <h5 class="text-uppercase text-muted mb-3 fw-semibold">{{ role }}</h5>
                 <div class="progress voice-progress" style="height: 6px">
-                  <div
-                    class="progress-bar"
-                    :class="'bg-' + getRoleColor(role)"
-                    :style="{ width: (count / choirStore.memberRoles.total) * 100 + '%' }"
-                  ></div>
+                  <div class="progress-bar" :class="'bg-' + getRoleColor(role)"
+                    :style="{ width: (count / choirStore.memberRoles.total) * 100 + '%' }"></div>
                 </div>
               </div>
             </div>
@@ -148,11 +143,7 @@
           <div class="col-md-6 mb-4" v-for="event in upcomingEventsSlice" :key="event.id">
             <div class="card event-card border-0 shadow-sm h-100 reveal">
               <div class="event-image-wrapper">
-                <img
-                  :src="event.image"
-                  class="card-img-top"
-                  :alt="event.title"
-                />
+                <img :src="event.image" class="card-img-top" :alt="event.title" />
                 <div class="event-date-badge">
                   <span class="event-day">{{ getDay(event.date) }}</span>
                   <span class="event-month">{{ getMonth(event.date) }}</span>
@@ -197,13 +188,8 @@
         <div class="row stagger-children" ref="galleryGrid">
           <div class="col-lg-4 col-md-6 mb-3" v-for="(photo, i) in gallerySlice" :key="photo.id">
             <div class="gallery-item position-relative overflow-hidden rounded-3">
-              <img
-                :src="photo.image"
-                :alt="photo.title"
-                class="w-100"
-                style="height: 300px; object-fit: cover;"
-                :class="{ 'tall-img': i === 0 }"
-              />
+              <img :src="photo.image" :alt="photo.title" class="w-100" style="height: 300px; object-fit: cover"
+                :class="{ 'tall-img': i === 0 }" />
               <div class="gallery-overlay">
                 <div class="gallery-overlay-content">
                   <span class="badge bg-gold mb-2">{{ photo.category }}</span>
@@ -295,7 +281,7 @@ export default {
             }
           });
         },
-        { threshold: 0.15 }
+        { threshold: 0.15 },
       );
       observer.observe(el);
       observers.push(observer);
@@ -304,31 +290,33 @@ export default {
     onMounted(() => {
       // Animate hero elements on load
       setTimeout(() => {
-        document.querySelectorAll('.reveal-hero').forEach((el, i) => {
+        document.querySelectorAll(".reveal-hero").forEach((el, i) => {
           setTimeout(() => {
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
           }, i * 200);
         });
       }, 300);
 
       // Scroll reveal for sections
-      const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+      const revealElements = document.querySelectorAll(
+        ".reveal, .reveal-left, .reveal-right, .reveal-scale",
+      );
       revealElements.forEach((el) => {
         observeElement(el, (target) => {
-          target.classList.add('revealed');
+          target.classList.add("revealed");
         });
       });
 
       // Stagger children reveal
       if (voiceGrid.value) {
         observeElement(voiceGrid.value, (target) => {
-          target.classList.add('revealed');
+          target.classList.add("revealed");
         });
       }
       if (galleryGrid.value) {
         observeElement(galleryGrid.value, (target) => {
-          target.classList.add('revealed');
+          target.classList.add("revealed");
         });
       }
 
@@ -348,12 +336,12 @@ export default {
     const particleStyle = (seed) => {
       const s = seed * 7.3;
       return {
-        left: ((s * 13.7) % 100) + '%',
-        top: ((s * 29.3) % 100) + '%',
-        width: ((s * 3.1) % 4 + 2) + 'px',
-        height: ((s * 3.1) % 4 + 2) + 'px',
-        animationDelay: ((s * 1.7) % 5) + 's',
-        animationDuration: ((s * 2.3) % 10 + 10) + 's',
+        left: ((s * 13.7) % 100) + "%",
+        top: ((s * 29.3) % 100) + "%",
+        width: ((s * 3.1) % 4) + 2 + "px",
+        height: ((s * 3.1) % 4) + 2 + "px",
+        animationDelay: ((s * 1.7) % 5) + "s",
+        animationDuration: ((s * 2.3) % 10) + 10 + "s",
       };
     };
 
@@ -381,8 +369,12 @@ export default {
 </script>
 
 <style scoped>
+.home-page {
+  overflow-x: hidden;
+}
+
 .hero-section {
-  background: url('/bg_dsv.jpg') center center / cover no-repeat;
+  background: url("/bg_dsv.jpg") center center / cover no-repeat;
   position: relative;
   min-height: 100vh;
   margin-top: -76px;
@@ -393,7 +385,10 @@ export default {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(22, 33, 62, 0.75) 50%, rgba(15, 52, 96, 0.8) 100%);
+  background: linear-gradient(135deg,
+      rgba(26, 26, 46, 0.85) 0%,
+      rgba(22, 33, 62, 0.75) 50%,
+      rgba(15, 52, 96, 0.8) 100%);
   z-index: 1;
 }
 
@@ -413,16 +408,35 @@ export default {
 }
 
 @keyframes floatAround {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-  25% { transform: translateY(-30px) translateX(15px); opacity: 0.4; }
-  50% { transform: translateY(-10px) translateX(-10px); opacity: 0.3; }
-  75% { transform: translateY(-40px) translateX(20px); opacity: 0.5; }
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.2;
+  }
+
+  25% {
+    transform: translateY(-30px) translateX(15px);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-10px) translateX(-10px);
+    opacity: 0.3;
+  }
+
+  75% {
+    transform: translateY(-40px) translateX(20px);
+    opacity: 0.5;
+  }
 }
 
 .reveal-hero {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
 }
 
 .hero-subtitle {
@@ -456,8 +470,15 @@ export default {
 }
 
 @keyframes scrollDot {
-  0% { transform: translateX(-50%) translateY(0); opacity: 1; }
-  100% { transform: translateX(-50%) translateY(16px); opacity: 0; }
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(16px);
+    opacity: 0;
+  }
 }
 
 /* About Section */
@@ -539,10 +560,25 @@ export default {
   transition: var(--transition-smooth);
 }
 
-.role-soprano { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
-.role-alto { background: rgba(25, 135, 84, 0.12); color: #198754; }
-.role-tenor { background: rgba(255, 193, 7, 0.12); color: #ffc107; }
-.role-bass { background: rgba(13, 110, 253, 0.12); color: #0d6efd; }
+.role-soprano {
+  background: rgba(220, 53, 69, 0.12);
+  color: #dc3545;
+}
+
+.role-alto {
+  background: rgba(25, 135, 84, 0.12);
+  color: #198754;
+}
+
+.role-tenor {
+  background: rgba(255, 193, 7, 0.12);
+  color: #ffc107;
+}
+
+.role-bass {
+  background: rgba(13, 110, 253, 0.12);
+  color: #0d6efd;
+}
 
 .role-card:hover .role-icon-circle {
   transform: scale(1.1) rotate(5deg);
@@ -653,18 +689,119 @@ export default {
 
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 90vh;
+    min-height: 85vh;
+    padding-top: 76px;
   }
+
+  .hero-section .display-2 {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-buttons .btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px !important;
+  }
+
+  .hero-scroll-indicator {
+    display: none;
+  }
+
   .about-experience-badge {
     position: static;
     margin-top: 20px;
     display: inline-block;
   }
+
   .about-image-decoration {
     display: none;
   }
+
   .about-image-wrapper {
     padding: 0;
+  }
+
+  .stats-section .display-4 {
+    font-size: 2rem;
+  }
+
+  .stat-card {
+    padding: 20px 12px;
+  }
+
+  .stat-card .display-4 {
+    font-size: 1.8rem;
+  }
+
+  .voice-section .display-5 {
+    font-size: 2rem;
+  }
+
+  .role-icon-circle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .role-icon-circle i {
+    font-size: 1.3rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    min-height: 80vh;
+  }
+
+  .hero-section .display-2 {
+    font-size: 1.8rem;
+  }
+
+  .hero-section .lead {
+    font-size: 0.95rem;
+  }
+
+  .hero-buttons .btn {
+    font-size: 0.9rem;
+    padding: 10px 20px !important;
+  }
+
+  .stats-section .display-4 {
+    font-size: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 16px 10px;
+  }
+
+  .stat-card .stat-icon i {
+    font-size: 1.5rem;
+  }
+
+  .stat-card p {
+    font-size: 0.7rem;
+  }
+
+  .event-image-wrapper {
+    height: 160px;
+  }
+
+  .event-date-badge {
+    padding: 6px 10px;
+    top: 10px;
+    left: 10px;
+  }
+
+  .event-day {
+    font-size: 1rem;
+  }
+
+  .gallery-item img {
+    height: 220px !important;
   }
 }
 </style>

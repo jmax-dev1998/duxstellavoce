@@ -239,5 +239,26 @@ export default {
   .footer-top {
     padding: 40px 0 20px;
   }
+  .footer-brand h5 {
+    font-size: 1.2rem;
+  }
+  .footer-heading {
+    font-size: 1rem;
+  }
+  .social-links {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-top {
+    padding: 30px 0 10px;
+  }
+  .footer-bottom {
+    font-size: 0.8rem;
+  }
+  .contact-item {
+    font-size: 0.85rem;
+  }
 }
 </style>

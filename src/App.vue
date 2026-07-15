@@ -39,6 +39,12 @@ export default {
 </script>
 
 <style>
+#app {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
 .page-fade-enter-active,
 .page-fade-leave-active {
   transition: opacity 0.35s ease, transform 0.35s ease;

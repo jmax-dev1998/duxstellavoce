@@ -131,4 +131,29 @@ export default {
   justify-content: center;
   margin: 0 auto;
 }
+
+@media (max-width: 768px) {
+  .about-page .card-body.p-md-5 {
+    padding: 24px !important;
+  }
+  .about-page .row.mt-4 .col-4 h4 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .about-page .btn {
+    width: 100%;
+  }
+  .about-page .d-flex.gap-3 {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+  .about-page .row.mt-4 .col-4 h4 {
+    font-size: 1.1rem;
+  }
+  .about-page .row.mt-4 .col-4 small {
+    font-size: 0.7rem;
+  }
+}
 </style>

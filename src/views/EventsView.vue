@@ -223,4 +223,40 @@ export default {
 .quick-event:hover {
   background: rgba(255, 215, 0, 0.05);
 }
+
+@media (max-width: 768px) {
+  .event-card .col-md-4 {
+    min-height: 200px !important;
+  }
+  .event-card .col-md-4 img {
+    position: relative !important;
+  }
+  .event-card-date {
+    right: 15px;
+  }
+  .detail-row {
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .detail-row span {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .filter-btn {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+  .event-card .card-body {
+    padding: 16px;
+  }
+  .event-card h3 {
+    font-size: 1.2rem;
+  }
+  .event-card .btn-gold {
+    width: 100%;
+  }
+}
 </style>

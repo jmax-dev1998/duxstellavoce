@@ -270,4 +270,34 @@ export default {
   border: 4px solid #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
+
+@media (max-width: 768px) {
+  .role-pill {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+  .member-image-wrapper {
+    height: 150px;
+  }
+  .member-avatar img {
+    width: 64px;
+    height: 64px;
+  }
+  .member-avatar {
+    margin-top: -48px;
+  }
+}
+
+@media (max-width: 576px) {
+  .role-pills {
+    gap: 6px;
+  }
+  .role-pill {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+  .role-pill i {
+    display: none;
+  }
+}
 </style>
