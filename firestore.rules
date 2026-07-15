@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── User Profiles ─────────────────────────────────────────────
+    match /users/{userId} {
+
+      // Create: only when registering yourself, with valid fields
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['name', 'email', 'avatar', 'role'])
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$')
+        && request.resource.data.avatar is string
+        && request.resource.data.role == 'guest';
+
+      // Read your own profile
+      allow read: if request.auth != null
+        && request.auth.uid == userId;
+
+      // Update your own profile (cannot change role, email, or uid)
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'email']))
+        && request.resource.data.name is string
+        && request.resource.data.avatar is string;
+
+      // ── Admin: full access ──
+      allow read, write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+
+      // ── Manager: read-only ──
+      allow read: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager';
+    }
+
+    // ─── Default: deny everything else ──────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

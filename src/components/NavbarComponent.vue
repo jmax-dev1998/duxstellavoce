@@ -38,6 +38,26 @@
               <i :class="link.icon" class="me-1"></i>{{ link.label }}
             </router-link>
           </li>
+
+          <li class="nav-item ms-lg-3" v-if="!authStore.loading">
+            <hr class="dropdown-divider d-lg-none my-2" />
+            <template v-if="authStore.user">
+              <span class="nav-link text-gold d-none d-lg-inline">
+                <i class="bi bi-person-circle me-1"></i>{{ authStore.user.email }}
+              </span>
+              <router-link class="nav-link d-lg-none" to="/">
+                <i class="bi bi-person-circle me-1"></i>{{ authStore.user.email }}
+              </router-link>
+              <button class="nav-link btn-logout" @click="handleLogout">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+              </button>
+            </template>
+            <template v-else>
+              <router-link class="nav-link btn-gold-nav" to="/login">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+              </router-link>
+            </template>
+          </li>
         </ul>
       </div>
     </div>
@@ -46,12 +66,15 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 export default {
   name: "NavbarComponent",
   setup() {
     const route = useRoute();
+    const router = useRouter();
+    const authStore = useAuthStore();
     const scrolled = ref(false);
     const isHome = computed(() => route.path === "/");
 
@@ -68,6 +91,16 @@ export default {
       scrolled.value = window.scrollY > 50;
     };
 
+    const handleLogout = async () => {
+      await authStore.logout();
+      const collapse = document.getElementById("navbarNav");
+      if (collapse && collapse.classList.contains("show")) {
+        const bsCollapse = bootstrap.Collapse.getInstance(collapse);
+        if (bsCollapse) bsCollapse.hide();
+      }
+      router.push("/");
+    };
+
     onMounted(() => {
       window.addEventListener("scroll", handleScroll, { passive: true });
     });
@@ -76,7 +109,7 @@ export default {
       window.removeEventListener("scroll", handleScroll);
     });
 
-    return { scrolled, navLinks, isHome };
+    return { scrolled, navLinks, isHome, authStore, handleLogout };
   },
 };
 </script>
@@ -181,6 +214,50 @@ export default {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,215,0,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
+.btn-gold-nav {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+  color: #000 !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  margin-left: 8px;
+  font-weight: 700 !important;
+  transition: var(--transition-smooth);
+}
+
+.btn-gold-nav:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  color: #000 !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-gold-nav::after {
+  display: none !important;
+}
+
+.btn-logout {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.btn-logout:hover {
+  border-color: rgba(255, 215, 0, 0.4) !important;
+  color: var(--gold) !important;
+  background: rgba(255, 215, 0, 0.08) !important;
+}
+
+.btn-logout::after {
+  display: none !important;
+}
+
 @media (max-width: 991.98px) {
   .navbar {
     padding: 10px 0;
@@ -202,6 +279,16 @@ export default {
     padding: 10px 16px;
     margin: 2px 0;
     font-size: 1rem;
+  }
+  .btn-gold-nav,
+  .btn-logout {
+    display: block;
+    margin: 8px 0 0 0 !important;
+    text-align: center;
+  }
+  .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
   }
 }
 

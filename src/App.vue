@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useAuthStore } from "./stores/auth";
 import NavbarComponent from "./components/NavbarComponent.vue";
 import FooterComponent from "./components/FooterComponent.vue";
 
@@ -24,7 +25,12 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const authStore = useAuthStore();
     const transitionName = ref("page-fade");
+
+    onMounted(() => {
+      authStore.init();
+    });
 
     watch(
       () => route.path,
