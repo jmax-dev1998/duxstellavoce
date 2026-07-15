@@ -113,7 +113,7 @@ export const useChoirStore = defineStore("choir", () => {
       location: "New York City",
       description: "Our annual spring concert featuring classical and contemporary pieces",
       image: "https://picsum.photos/800/400?random=1",
-      tickets: "Available",
+      tickets: "Paid",
     },
     {
       id: 2,
@@ -124,7 +124,7 @@ export const useChoirStore = defineStore("choir", () => {
       location: "Boston",
       description: "Traditional Christmas carols and holiday favorites",
       image: "https://picsum.photos/800/400?random=2",
-      tickets: "Coming Soon",
+      tickets: "Free",
     },
     {
       id: 3,
@@ -135,7 +135,7 @@ export const useChoirStore = defineStore("choir", () => {
       location: "New York City",
       description: "Participating in the prestigious International Choir Festival",
       image: "https://picsum.photos/800/400?random=3",
-      tickets: "On Sale",
+      tickets: "Paid",
     },
     {
       id: 4,
@@ -146,7 +146,7 @@ export const useChoirStore = defineStore("choir", () => {
       location: "Chicago",
       description: "Outdoor summer recital featuring light classical and popular music",
       image: "https://picsum.photos/800/400?random=4",
-      tickets: "Sold Out",
+      tickets: "Paid",
     },
   ]);
 

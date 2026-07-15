@@ -1,18 +1,17 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-lg fixed-top" :class="{ 'navbar-scrolled': scrolled || !isHome }">
     <div class="container">
       <router-link class="navbar-brand d-flex align-items-center" to="/">
-        <div>
+        <div class="brand-logo-wrapper">
           <img
             src="/logodummy_dsv.png"
             alt="Logo"
             width="40"
             height="40"
-            class="d-inline-block align-text-top me-2"
-            style="border-radius: 50%; object-fit: cover; border: 2px solid #ffd700"
+            class="d-inline-block align-text-top me-2 brand-logo"
           />
         </div>
-        <span class="fw-bold">Dux Stella Voce</span>
+        <span class="fw-bold brand-text">Dux <span class="gold-text">Stella</span> Voce</span>
       </router-link>
 
       <button
@@ -20,40 +19,23 @@
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/" exact-active-class="active">
-              <i class="bi bi-house-door me-1"></i>Home
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/events" active-class="active">
-              <i class="bi bi-calendar-event me-1"></i>Events
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/members" active-class="active">
-              <i class="bi bi-people me-1"></i>Members
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/gallery" active-class="active">
-              <i class="bi bi-images me-1"></i>Gallery
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/library" active-class="active">
-              <i class="bi bi-book me-1"></i>Library
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/about" active-class="active">
-              <i class="bi bi-info-circle me-1"></i>About
+          <li class="nav-item" v-for="link in navLinks" :key="link.to">
+            <router-link
+              class="nav-link"
+              :to="link.to"
+              :exact-active-class="link.exact ? 'active' : ''"
+              :active-class="!link.exact ? 'active' : ''"
+            >
+              <i :class="link.icon" class="me-1"></i>{{ link.label }}
             </router-link>
           </li>
         </ul>
@@ -63,48 +45,142 @@
 </template>
 
 <script>
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
+
 export default {
   name: "NavbarComponent",
+  setup() {
+    const route = useRoute();
+    const scrolled = ref(false);
+    const isHome = computed(() => route.path === "/");
+
+    const navLinks = [
+      { to: "/", label: "Home", icon: "bi bi-house-door", exact: true },
+      { to: "/events", label: "Events", icon: "bi bi-calendar-event", exact: false },
+      { to: "/members", label: "Members", icon: "bi bi-people", exact: false },
+      { to: "/gallery", label: "Gallery", icon: "bi bi-images", exact: false },
+      { to: "/library", label: "Library", icon: "bi bi-book", exact: false },
+      { to: "/about", label: "About", icon: "bi bi-info-circle", exact: false },
+    ];
+
+    const handleScroll = () => {
+      scrolled.value = window.scrollY > 50;
+    };
+
+    onMounted(() => {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("scroll", handleScroll);
+    });
+
+    return { scrolled, navLinks, isHome };
+  },
 };
 </script>
 
 <style scoped>
 .navbar {
-  backdrop-filter: blur(10px);
-  background: rgba(33, 37, 41, 0.95) !important;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  padding: 12px 0;
+  background: transparent;
+  transition: var(--transition-smooth);
+  z-index: 1000;
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
+.navbar-scrolled {
+  background: rgba(26, 26, 46, 0.92) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.brand-logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  transition: var(--transition-smooth);
+}
+
+.navbar-scrolled .brand-logo {
+  border-color: var(--gold-light);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.brand-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
   letter-spacing: 1px;
+  color: #fff;
+}
+
+.gold-text {
+  color: var(--gold);
 }
 
 .nav-link {
   position: relative;
-  transition: color 0.3s ease;
-  margin: 0 5px;
+  padding: 8px 16px;
+  margin: 0 2px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: var(--transition-smooth);
+  border-radius: 8px;
 }
 
 .nav-link::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: 0;
+  bottom: 2px;
   left: 50%;
-  background: #ffd700;
-  transition: all 0.3s ease;
+  background: var(--gold);
+  transition: all 0.4s ease;
   transform: translateX(-50%);
+  border-radius: 2px;
 }
 
 .nav-link:hover::after,
 .nav-link.active::after {
-  width: 100%;
+  width: 60%;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: #ffd700 !important;
+  color: var(--gold) !important;
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.navbar-toggler {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 8px 10px;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,215,0,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: rgba(26, 26, 46, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+  }
 }
 </style>

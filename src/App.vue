@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <NavbarComponent />
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
+    <router-view v-slot="{ Component, route }">
+      <transition :name="transitionName" mode="out-in">
+        <component :is="Component" :key="route.path" />
       </transition>
     </router-view>
     <FooterComponent />
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import NavbarComponent from "./components/NavbarComponent.vue";
 import FooterComponent from "./components/FooterComponent.vue";
 
@@ -20,17 +22,35 @@ export default {
     NavbarComponent,
     FooterComponent,
   },
+  setup() {
+    const route = useRoute();
+    const transitionName = ref("page-fade");
+
+    watch(
+      () => route.path,
+      () => {
+        transitionName.value = "page-fade";
+      }
+    );
+
+    return { transitionName };
+  },
 };
 </script>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.page-fade-enter-from {
   opacity: 0;
+  transform: translateY(15px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-15px);
 }
 </style>

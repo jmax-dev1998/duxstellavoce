@@ -2,47 +2,51 @@
   <div class="library-page">
     <div class="page-header text-white py-5 mt-5">
       <div class="container">
-        <h1 class="display-4 fw-bold">Sheet Music Library</h1>
-        <p class="lead">Explore our extensive collection of choral arrangements</p>
+        <p class="text-gold fw-semibold mb-2" style="letter-spacing: 3px; font-size: 0.85rem;">SHEET MUSIC ARCHIVE</p>
+        <h1 class="display-4 fw-bold">Library</h1>
+        <p class="lead text-white-50">Explore our extensive collection of choral arrangements</p>
       </div>
     </div>
 
     <div class="container py-5">
-      <!-- Search and Filter -->
       <div class="row mb-4">
-        <div class="col-md-6 mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <div class="col-md-5 mb-3">
+          <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
             <input
               type="text"
-              class="form-control"
+              class="form-control search-input"
               v-model="searchQuery"
-              placeholder="Search sheet music..."
+              placeholder="Search by title or composer..."
             />
           </div>
         </div>
         <div class="col-md-3 mb-3">
-          <select class="form-select" v-model="selectedGenre">
+          <select class="form-select form-select-custom" v-model="selectedGenre">
             <option value="All">All Genres</option>
             <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
           </select>
         </div>
-        <div class="col-md-3 mb-3">
-          <select class="form-select" v-model="selectedDifficulty">
-            <option value="All">All Difficulties</option>
+        <div class="col-md-2 mb-3">
+          <select class="form-select form-select-custom" v-model="selectedDifficulty">
+            <option value="All">All Levels</option>
             <option value="Beginner">Beginner</option>
             <option value="Intermediate">Intermediate</option>
             <option value="Advanced">Advanced</option>
           </select>
         </div>
+        <div class="col-md-2 mb-3 d-flex gap-2">
+          <button class="btn btn-gold flex-grow-1" @click="searchQuery = ''; selectedGenre = 'All'; selectedDifficulty = 'All'">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- Library Table -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="table-dark">
+            <table class="table table-hover mb-0 library-table">
+              <thead>
                 <tr>
                   <th>#</th>
                   <th>Title</th>
@@ -50,31 +54,38 @@
                   <th>Genre</th>
                   <th>Year</th>
                   <th>Difficulty</th>
-                  <th>Action</th>
+                  <th class="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(piece, index) in filteredLibrary" :key="piece.id">
-                  <td>{{ index + 1 }}</td>
-                  <td class="fw-bold">{{ piece.title }}</td>
+                <tr v-for="(piece, index) in filteredLibrary" :key="piece.id" class="library-row">
+                  <td class="text-muted">{{ index + 1 }}</td>
+                  <td class="fw-bold">
+                    <i class="bi bi-music-note text-gold me-2"></i>{{ piece.title }}
+                  </td>
                   <td>{{ piece.composer }}</td>
                   <td>
-                    <span class="badge bg-secondary">{{ piece.genre }}</span>
+                    <span class="badge genre-badge">{{ piece.genre }}</span>
                   </td>
                   <td>{{ piece.year }}</td>
                   <td>
-                    <span class="badge" :class="getDifficultyClass(piece.difficulty)">
+                    <span class="badge difficulty-badge" :class="'diff-' + piece.difficulty.toLowerCase()">
                       {{ piece.difficulty }}
                     </span>
                   </td>
-                  <td>
+                  <td class="text-center">
                     <a :href="piece.pdf" class="btn btn-sm btn-gold">
-                      <i class="bi bi-download me-1"></i>Download
+                      <i class="bi bi-download me-1"></i>PDF
                     </a>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-if="filteredLibrary.length === 0" class="text-center py-5">
+            <i class="bi bi-file-earmark-music display-1 text-muted"></i>
+            <h5 class="mt-3">No results found</h5>
+            <p class="text-muted">Try adjusting your search or filter criteria</p>
           </div>
         </div>
       </div>
@@ -100,9 +111,10 @@ export default {
 
     const filteredLibrary = computed(() => {
       return choirStore.library.filter((piece) => {
+        const q = searchQuery.value.toLowerCase();
         const matchesSearch =
-          piece.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          piece.composer.toLowerCase().includes(searchQuery.value.toLowerCase());
+          !q || piece.title.toLowerCase().includes(q) ||
+          piece.composer.toLowerCase().includes(q);
         const matchesGenre = selectedGenre.value === "All" || piece.genre === selectedGenre.value;
         const matchesDifficulty =
           selectedDifficulty.value === "All" || piece.difficulty === selectedDifficulty.value;
@@ -110,51 +122,93 @@ export default {
       });
     });
 
-    const getDifficultyClass = (difficulty) => {
-      switch (difficulty) {
-        case "Beginner":
-          return "bg-success";
-        case "Intermediate":
-          return "bg-warning text-dark";
-        case "Advanced":
-          return "bg-danger";
-        default:
-          return "bg-secondary";
-      }
-    };
-
-    return {
-      choirStore,
-      searchQuery,
-      selectedGenre,
-      selectedDifficulty,
-      genres,
-      filteredLibrary,
-      getDifficultyClass,
-    };
+    return { choirStore, searchQuery, selectedGenre, selectedDifficulty, genres, filteredLibrary };
   },
 };
 </script>
 
 <style scoped>
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin-top: -76px;
-  padding-top: 100px;
+.search-wrapper {
+  position: relative;
 }
 
-.btn-gold {
-  background: #ffd700;
-  border-color: #ffd700;
-  color: #000;
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #adb5bd;
+  z-index: 10;
+  font-size: 1.1rem;
 }
 
-.btn-gold:hover {
-  background: #ffed4a;
-  border-color: #ffed4a;
+.search-input {
+  padding-left: 44px;
+  border-radius: 12px;
+  height: 48px;
+  border: 2px solid #e9ecef;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(255, 215, 0, 0.1);
+.search-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.12);
 }
+
+.form-select-custom {
+  border-radius: 12px;
+  height: 48px;
+  border: 2px solid #e9ecef;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
+}
+
+.form-select-custom:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.12);
+}
+
+.library-table thead th {
+  background: var(--dark);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px;
+  border: none;
+}
+
+.library-row {
+  transition: var(--transition-smooth);
+}
+
+.library-row:hover {
+  background-color: rgba(255, 215, 0, 0.06) !important;
+}
+
+.library-row td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+.genre-badge {
+  background: rgba(255, 215, 0, 0.12);
+  color: #b8960f;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.difficulty-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.diff-beginner { background: rgba(25, 135, 84, 0.12); color: #198754; }
+.diff-intermediate { background: rgba(255, 193, 7, 0.12); color: #cc9a06; }
+.diff-advanced { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
 </style>
