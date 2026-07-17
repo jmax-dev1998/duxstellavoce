@@ -104,7 +104,7 @@
           <h2 class="section-title text-center reveal">Voice Distribution</h2>
         </div>
         <div class="row stagger-children" ref="voiceGrid">
-          <div class="col-md-3 mb-4" v-for="(count, role) in choirStore.memberRoles" :key="role">
+          <div class="col-md-3 mb-4" v-for="(count, role) in memberRoles" :key="role">
             <div class="card border-0 shadow-sm text-center h-100 role-card" v-if="role !== 'total'">
               <div class="card-body py-4">
                 <div class="role-icon mb-3">
@@ -118,7 +118,7 @@
                 <h5 class="text-uppercase text-muted mb-3 fw-semibold">{{ role }}</h5>
                 <div class="progress voice-progress" style="height: 6px">
                   <div class="progress-bar" :class="'bg-' + getRoleColor(role)"
-                    :style="{ width: (count / choirStore.memberRoles.total) * 100 + '%' }"></div>
+                    :style="{ width: (count / memberRoles.total) * 100 + '%' }"></div>
                 </div>
               </div>
             </div>
@@ -173,10 +173,10 @@
       </div>
     </section>
 
-    <!-- Gallery Highlight -->
-    <section class="py-5 gallery-highlight" ref="gallerySection">
-      <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Gallery Highlight - Horizontal Continuous Scroll -->
+    <section class="py-5 gallery-highlight overflow-hidden" ref="gallerySection">
+      <div class="container mb-4">
+        <div class="d-flex justify-content-between align-items-center">
           <div>
             <p class="text-gold fw-semibold mb-1 reveal">Moments Captured</p>
             <h2 class="section-title mb-0 text-white reveal">Gallery Highlights</h2>
@@ -185,18 +185,19 @@
             View Gallery <i class="bi bi-arrow-right ms-1"></i>
           </router-link>
         </div>
-        <div class="row stagger-children" ref="galleryGrid">
-          <div class="col-lg-4 col-md-6 mb-3" v-for="(photo, i) in gallerySlice" :key="photo.id">
-            <div class="gallery-item position-relative overflow-hidden rounded-3">
-              <img :src="photo.image" :alt="photo.title" class="w-100" style="height: 300px; object-fit: cover"
-                :class="{ 'tall-img': i === 0 }" />
-              <div class="gallery-overlay">
-                <div class="gallery-overlay-content">
-                  <span class="badge bg-gold mb-2">{{ photo.category }}</span>
-                  <h6 class="mb-1 fw-bold">{{ photo.title }}</h6>
-                  <small class="text-white-50">{{ formatDate(photo.date) }}</small>
-                </div>
-              </div>
+      </div>
+      <div class="gallery-scroll-wrapper" ref="galleryScroll">
+        <div class="gallery-scroll-track" v-if="galleryScrollItems.length">
+          <div
+            class="gallery-scroll-item"
+            v-for="(photo, i) in galleryScrollItems"
+            :key="'g-' + photo.id + '-' + i"
+          >
+            <img :src="photo.image" :alt="photo.title" />
+            <div class="gallery-scroll-overlay">
+              <span class="badge bg-gold mb-2">{{ photo.category }}</span>
+              <h6 class="mb-1 fw-bold text-white">{{ photo.title }}</h6>
+              <small class="text-white-50">{{ formatDate(photo.date) }}</small>
             </div>
           </div>
         </div>
@@ -207,34 +208,85 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useChoirStore } from "../stores/choir";
+import { db } from "../firebase";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import * as googleDrive from "../services/googleDrive";
 
 export default {
   name: "HomeView",
   setup() {
-    const choirStore = useChoirStore();
-
     const aboutSection = ref(null);
     const statsSection = ref(null);
     const voiceSection = ref(null);
     const voiceGrid = ref(null);
     const eventsSection = ref(null);
     const gallerySection = ref(null);
-    const galleryGrid = ref(null);
+    const galleryScroll = ref(null);
 
     const animatedValues = ref([0, 0, 0, 0]);
     let countersStarted = false;
     let observers = [];
 
+    const members = ref([]);
+    const events = ref([]);
+    const photos = ref([]);
+
+    const memberRoles = computed(() => ({
+      soprano: members.value.filter((m) => m.role === "Soprano").length,
+      alto: members.value.filter((m) => m.role === "Alto").length,
+      tenor: members.value.filter((m) => m.role === "Tenor").length,
+      bass: members.value.filter((m) => m.role === "Bass").length,
+      total: members.value.length,
+    }));
+
     const stats = [
       { label: "Performances", value: 50, icon: "bi bi-music-note-beamed" },
       { label: "Years Active", value: 12, icon: "bi bi-calendar-heart" },
-      { label: "Members", value: choirStore.memberRoles.total, icon: "bi bi-people" },
+      { label: "Members", value: computed(() => members.value.length), icon: "bi bi-people" },
       { label: "Awards", value: 15, icon: "bi bi-trophy" },
     ];
 
-    const upcomingEventsSlice = computed(() => choirStore.upcomingEvents.slice(0, 2));
-    const gallerySlice = computed(() => choirStore.gallery.slice(0, 6));
+    const upcomingEventsSlice = computed(() =>
+      events.value
+        .filter((e) => new Date(e.date) >= new Date(new Date().toDateString()))
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 3),
+    );
+
+    const gallerySlice = computed(() => photos.value.slice(0, 5));
+
+    const galleryScrollItems = computed(() => {
+      const items = gallerySlice.value;
+      return items.length ? [...items, ...items] : [];
+    });
+
+    const fetchMembers = async () => {
+      try {
+        const q = query(collection(db, "members"), orderBy("name"));
+        const snap = await getDocs(q);
+        members.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      } catch (e) {
+        console.error("Failed to fetch members:", e);
+      }
+    };
+
+    const fetchEvents = async () => {
+      try {
+        const q = query(collection(db, "events"), orderBy("date"));
+        const snap = await getDocs(q);
+        events.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      } catch (e) {
+        console.error("Failed to fetch events:", e);
+      }
+    };
+
+    const fetchGallery = async () => {
+      try {
+        photos.value = await googleDrive.getFiles();
+      } catch (e) {
+        console.error("Failed to fetch gallery:", e);
+      }
+    };
 
     const formatDate = (date) => {
       return new Date(date).toLocaleDateString("en-US", {
@@ -248,7 +300,7 @@ export default {
     const getMonth = (date) => new Date(date).toLocaleString("default", { month: "short" });
 
     const getRoleColor = (role) => {
-      const colors = { soprano: "danger", alto: "success", tenor: "warning", bass: "primary" };
+      const colors = { Soprano: "danger", Alto: "success", Tenor: "warning", Bass: "primary" };
       return colors[role] || "secondary";
     };
 
@@ -256,7 +308,7 @@ export default {
       if (countersStarted) return;
       countersStarted = true;
       stats.forEach((stat, index) => {
-        const target = stat.value;
+        const target = typeof stat.value === "number" ? stat.value : members.value.length;
         let current = 0;
         const increment = Math.ceil(target / 40);
         const interval = setInterval(() => {
@@ -287,8 +339,9 @@ export default {
       observers.push(observer);
     };
 
-    onMounted(() => {
-      // Animate hero elements on load
+    onMounted(async () => {
+      await Promise.all([fetchMembers(), fetchEvents(), fetchGallery()]);
+
       setTimeout(() => {
         document.querySelectorAll(".reveal-hero").forEach((el, i) => {
           setTimeout(() => {
@@ -298,7 +351,6 @@ export default {
         });
       }, 300);
 
-      // Scroll reveal for sections
       const revealElements = document.querySelectorAll(
         ".reveal, .reveal-left, .reveal-right, .reveal-scale",
       );
@@ -308,19 +360,12 @@ export default {
         });
       });
 
-      // Stagger children reveal
       if (voiceGrid.value) {
         observeElement(voiceGrid.value, (target) => {
           target.classList.add("revealed");
         });
       }
-      if (galleryGrid.value) {
-        observeElement(galleryGrid.value, (target) => {
-          target.classList.add("revealed");
-        });
-      }
 
-      // Counter animation
       if (statsSection.value) {
         observeElement(statsSection.value, () => {
           animateCounters();
@@ -332,7 +377,6 @@ export default {
       observers.forEach((obs) => obs.disconnect());
     });
 
-    // Generate particles
     const particleStyle = (seed) => {
       const s = seed * 7.3;
       return {
@@ -346,16 +390,17 @@ export default {
     };
 
     return {
-      choirStore,
       aboutSection,
       statsSection,
       voiceSection,
       voiceGrid,
       eventsSection,
       gallerySection,
-      galleryGrid,
+      galleryScroll,
+      memberRoles,
       upcomingEventsSlice,
       gallerySlice,
+      galleryScrollItems,
       formatDate,
       getDay,
       getMonth,
@@ -363,6 +408,7 @@ export default {
       stats,
       animatedValues,
       particleStyle,
+      members,
     };
   },
 };
@@ -636,46 +682,73 @@ export default {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Gallery Highlight */
+/* Gallery Highlight - Continuous Horizontal Scroll */
 .gallery-highlight {
   background: linear-gradient(135deg, var(--dark) 0%, #0d0d1a 100%);
 }
 
-.gallery-item {
-  cursor: pointer;
-  border-radius: 12px !important;
+.gallery-scroll-wrapper {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
-.gallery-item img {
-  transition: transform 0.6s ease;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.1);
-}
-
-.gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+.gallery-scroll-track {
   display: flex;
-  align-items: flex-end;
-  padding: 20px;
+  gap: 24px;
+  width: max-content;
+  animation: galleryScroll 40s linear infinite;
 }
 
-.gallery-item:hover .gallery-overlay {
-  opacity: 1;
+.gallery-highlight:hover .gallery-scroll-track {
+  animation-play-state: paused;
 }
 
-.gallery-overlay-content {
-  transform: translateY(20px);
+@keyframes galleryScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.gallery-scroll-item {
+  position: relative;
+  flex-shrink: 0;
+  width: 320px;
+  height: 280px;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
   transition: transform 0.4s ease;
 }
 
-.gallery-item:hover .gallery-overlay-content {
-  transform: translateY(0);
+.gallery-scroll-item:hover {
+  transform: translateY(-6px);
+}
+
+.gallery-scroll-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.gallery-scroll-item:hover img {
+  transform: scale(1.12);
+}
+
+.gallery-scroll-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.gallery-scroll-item:hover .gallery-scroll-overlay {
+  opacity: 1;
 }
 
 .role-card {
@@ -750,6 +823,15 @@ export default {
   .role-icon-circle i {
     font-size: 1.3rem !important;
   }
+
+  .gallery-scroll-item {
+    width: 260px;
+    height: 220px;
+  }
+
+  .gallery-scroll-track {
+    gap: 16px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -800,8 +882,9 @@ export default {
     font-size: 1rem;
   }
 
-  .gallery-item img {
-    height: 220px !important;
+  .gallery-scroll-item {
+    width: 240px;
+    height: 200px;
   }
 }
 </style>
