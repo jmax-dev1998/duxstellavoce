@@ -3,7 +3,8 @@ import { ref } from "vue";
 const CONFIG = {
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "",
   API_KEY: import.meta.env.VITE_GOOGLE_API_KEY || "",
-  FOLDER_ID: import.meta.env.VITE_GOOGLE_DRIVE_FOLDER_ID || "",
+  IMG_FOLDER_ID: import.meta.env.VITE_GOOGLE_DRIVE_IMG_FOLDER_ID || "",
+  PDF_FOLDER_ID: import.meta.env.VITE_GOOGLE_DRIVE_PDF_FOLDER_ID || "",
   CLIENT_ID: import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID || "",
 };
 
@@ -41,7 +42,7 @@ function normalizeDriveFile(item) {
 }
 
 async function fetchViaDirectAPI(folderId) {
-  const folder = folderId || CONFIG.FOLDER_ID;
+  const folder = folderId || CONFIG.IMG_FOLDER_ID;
   const conditions = ["mimeType contains 'image/'", "trashed = false"];
   if (folder) conditions.push(`'${folder}' in parents`);
 
@@ -63,7 +64,7 @@ async function fetchViaDirectAPI(folderId) {
 }
 
 async function fetchViaBackend(folderId) {
-  const folder = folderId || CONFIG.FOLDER_ID;
+  const folder = folderId || CONFIG.IMG_FOLDER_ID;
   const params = new URLSearchParams({ action: "files" });
   if (folder) params.set("folder", folder);
 
@@ -78,7 +79,7 @@ async function fetchViaBackend(folderId) {
 
 async function fetchViaOAuth(folderId) {
   const token = await getAccessToken();
-  const folder = folderId || CONFIG.FOLDER_ID;
+  const folder = folderId || CONFIG.IMG_FOLDER_ID;
   const conditions = ["mimeType contains 'image/'", "trashed = false"];
   if (folder) conditions.push(`'${folder}' in parents`);
 
@@ -106,7 +107,7 @@ async function uploadViaBackend(file, { title, category, folderId } = {}) {
   formData.append("file", file);
   if (title) formData.append("name", title);
   if (category) formData.append("category", category);
-  if (folderId || CONFIG.FOLDER_ID) formData.append("folder", folderId || CONFIG.FOLDER_ID);
+  if (folderId || CONFIG.IMG_FOLDER_ID) formData.append("folder", folderId || CONFIG.IMG_FOLDER_ID);
 
   const url = `${CONFIG.API_BASE_URL}/api/drive.php?action=upload`;
   const res = await fetch(url, { method: "POST", body: formData });
@@ -120,8 +121,9 @@ async function uploadViaBackend(file, { title, category, folderId } = {}) {
 async function uploadWithOAuth(file, metadata) {
   const token = await getAccessToken();
 
+  const folderId = metadata.folderId || CONFIG.IMG_FOLDER_ID;
   const metadataObj = { name: metadata.title || file.name };
-  if (CONFIG.FOLDER_ID) metadataObj.parents = [CONFIG.FOLDER_ID];
+  if (folderId) metadataObj.parents = [folderId];
 
   const boundary = `drive_boundary_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const encoder = new TextEncoder();
@@ -241,6 +243,19 @@ export function signOut() {
   _tokenExpiresAt = 0;
   authStatus.value = "idle";
   authError.value = null;
+}
+
+export async function deleteFile(fileId) {
+  if (!CONFIG.CLIENT_ID) throw new Error("OAuth not configured. Set VITE_GOOGLE_DRIVE_CLIENT_ID in .env");
+  const token = await getAccessToken();
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok && res.status !== 404) {
+    const text = await res.text();
+    throw new Error(`Delete failed (${res.status}): ${text.slice(0, 200)}`);
+  }
 }
 
 // --- Public API ---

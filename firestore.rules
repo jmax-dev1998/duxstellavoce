@@ -70,6 +70,23 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'manager'];
     }
 
+    // ─── Library ──────────────────────────────────────────────────
+    match /library/{pieceId} {
+
+      // Anyone can read
+      allow read: if true;
+
+      // Only admin & manager can write (create, update, delete)
+      allow create: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'manager'];
+
+      allow update: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'manager'];
+
+      allow delete: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'manager'];
+    }
+
     // ─── Default: deny everything else ──────────────────────────────
     match /{document=**} {
       allow read, write: if false;
