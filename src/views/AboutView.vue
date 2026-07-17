@@ -17,7 +17,7 @@
             At Dux Stella Voce, we believe in the transformative power of choral music to inspire, unite, and elevate communities.
           </p>
           <p>
-            Founded in 2015, Harmony Voices has grown from a small community ensemble to a renowned choir performing at prestigious venues worldwide. Our diverse repertoire spans classical masterpieces, contemporary works, and innovative arrangements that push the boundaries of choral music.
+            Founded in 2022, Harmony Voices has grown from a small community ensemble to a renowned choir performing at prestigious venues worldwide. Our diverse repertoire spans classical masterpieces, contemporary works, and innovative arrangements that push the boundaries of choral music.
           </p>
           <div class="d-flex gap-3 mt-4">
             <router-link to="/events" class="btn btn-gold">
@@ -30,7 +30,7 @@
         </div>
         <div class="col-lg-6">
           <img
-            src="https://picsum.photos/600/450?random=30"
+            src="/naksatra_dsv.webp"
             alt="Choir"
             class="img-fluid rounded-3 shadow-lg"
           />
@@ -55,7 +55,7 @@
         <div class="row g-0">
           <div class="col-md-4">
             <img
-              src="https://picsum.photos/400/500?random=40"
+              src="/art_director.jpg"
               class="img-fluid h-100 w-100"
               style="object-fit: cover; min-height: 300px;"
               alt="Conductor"
@@ -64,12 +64,9 @@
           <div class="col-md-8">
             <div class="card-body p-4 p-md-5">
               <p class="text-gold fw-semibold mb-1">Artistic Director</p>
-              <h2 class="fw-bold mb-3">Maestro Giovanni Rossi</h2>
+              <h2 class="fw-bold mb-3">Maestro Alfredo Agustinus</h2>
               <p class="text-muted">
-                With over 20 years of experience in choral conducting, Maestro Rossi has led Dux Stella Voce to international acclaim. His innovative approach blends traditional choral techniques with contemporary musical expressions.
-              </p>
-              <p class="text-muted">
-                Trained at the prestigious Conservatorio di Musica in Milan and having conducted choirs across Europe and North America, he brings a wealth of expertise and passion to every performance.
+                With over 20 years of experience in choral conducting, Maestro Alfredo has led Dux Stella Voce to international acclaim. His innovative approach blends traditional choral techniques with contemporary musical expressions.
               </p>
               <div class="row mt-4">
                 <div class="col-4">

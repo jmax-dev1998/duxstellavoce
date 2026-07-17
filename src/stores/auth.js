@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import {
   auth,
   db,
@@ -16,11 +16,27 @@ import {
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
+  const profile = ref(null);
   const loading = ref(true);
 
+  const isAdminOrManager = computed(() => {
+    const role = profile.value?.role;
+    return role === "admin" || role === "manager";
+  });
+
   const init = () => {
-    onAuthStateChanged(auth, (firebaseUser) => {
+    onAuthStateChanged(auth, async (firebaseUser) => {
       user.value = firebaseUser;
+      if (firebaseUser) {
+        try {
+          const snap = await getDoc(doc(db, "users", firebaseUser.uid));
+          profile.value = snap.exists() ? snap.data() : null;
+        } catch {
+          profile.value = null;
+        }
+      } else {
+        profile.value = null;
+      }
       loading.value = false;
     });
   };
@@ -59,5 +75,5 @@ export const useAuthStore = defineStore("auth", () => {
     await signOut(auth);
   };
 
-  return { user, loading, init, login, register, googleLogin, logout };
+  return { user, profile, loading, isAdminOrManager, init, login, register, googleLogin, logout };
 });
