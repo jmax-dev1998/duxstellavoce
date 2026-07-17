@@ -39,8 +39,8 @@ service cloud.firestore {
     // ─── Members ──────────────────────────────────────────────────
     match /members/{memberId} {
 
-      // Anyone authenticated can read
-      allow read: if request.auth != null;
+      // Anyone can read
+      allow read: if true;
 
       // Only admin & manager can write (create, update, delete)
       allow create: if request.auth != null

@@ -224,9 +224,13 @@ export default {
     });
 
     const fetchMembers = async () => {
-      const q = query(collection(db, "members"), orderBy("name"));
-      const snap = await getDocs(q);
-      members.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      try {
+        const q = query(collection(db, "members"), orderBy("name"));
+        const snap = await getDocs(q);
+        members.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      } catch (e) {
+        console.error("Failed to fetch members:", e);
+      }
     };
 
     const fetchUserRole = async (uid) => {
