@@ -1,11 +1,14 @@
 <template>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="app">
     <NavbarComponent />
-    <router-view v-slot="{ Component, route }">
-      <transition :name="transitionName" mode="out-in">
-        <component :is="Component" :key="route.path" />
-      </transition>
-    </router-view>
+    <div id="main-content">
+      <router-view v-slot="{ Component, route }">
+        <transition :name="transitionName" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
+    </div>
     <FooterComponent />
     <transition name="loader-fade">
       <LoadingScreen v-if="authStore.loading" />
@@ -55,6 +58,24 @@ export default {
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--gold);
+  color: #1a1a2e;
+  padding: 8px 16px;
+  z-index: 100000;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
 }
 
 .page-fade-enter-active,

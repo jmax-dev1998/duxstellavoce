@@ -102,13 +102,13 @@
           <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between mb-3">
-                <button class="btn btn-sm btn-outline-dark" @click="prevMonth">
+                <button class="btn btn-sm calendar-nav-btn" @click="prevMonth">
                   <i class="bi bi-chevron-left"></i>
                 </button>
                 <h5 class="fw-bold mb-0">
                   {{ calendarMonthName }} <span class="text-gold">{{ calendarYear }}</span>
                 </h5>
-                <button class="btn btn-sm btn-outline-dark" @click="nextMonth">
+                <button class="btn btn-sm calendar-nav-btn" @click="nextMonth">
                   <i class="bi bi-chevron-right"></i>
                 </button>
               </div>
@@ -445,6 +445,28 @@ export default {
   padding: 8px 22px;
   font-weight: 500;
   transition: var(--transition-smooth);
+}
+
+.filter-btn.btn-outline-dark {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(245, 240, 232, 0.7);
+}
+
+.filter-btn.btn-outline-dark:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.calendar-nav-btn {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(245, 240, 232, 0.7);
+}
+
+.calendar-nav-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.05);
 }
 
 .event-card {

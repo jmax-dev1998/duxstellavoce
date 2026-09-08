@@ -11,9 +11,9 @@
                 width="50"
                 height="50"
                 class="rounded-circle mb-3"
-                style="border: 2px solid var(--gold)"
+                style="border: 2px solid var(--primary)"
               />
-              <h5 class="fw-bold mb-3">Dux <span class="gold-text">Stella</span> Voce</h5>
+              <h5 class="fw-bold mb-3">Dux <span class="primary-text">Stella</span> Voce</h5>
               <p class="text-white-50">
                 Bringing harmony to life through the power of choral music. Join us in our musical
                 journey.
@@ -106,8 +106,8 @@ export default {
 
 <style scoped>
 .footer {
-  background: linear-gradient(180deg, var(--dark) 0%, #0d0d1a 100%);
-  color: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, var(--bg) 0%, #1a0d2e 100%);
+  color: var(--text-secondary);
   position: relative;
   overflow: hidden;
 }
@@ -119,7 +119,7 @@ export default {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--primary), var(--primary-light), var(--primary), transparent);
 }
 
 .footer-top {
@@ -129,17 +129,18 @@ export default {
 .footer-brand h5 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.5rem;
+  color: var(--text-primary);
 }
 
-.gold-text {
-  color: var(--gold);
+.primary-text {
+  color: var(--primary);
 }
 
 .footer-heading {
   position: relative;
   padding-bottom: 12px;
   margin-bottom: 20px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.1rem;
 }
 
@@ -150,7 +151,7 @@ export default {
   left: 0;
   width: 30px;
   height: 2px;
-  background: var(--gold);
+  background: var(--primary);
   border-radius: 2px;
 }
 
@@ -166,20 +167,20 @@ export default {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(75, 36, 110, 0.3);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   text-decoration: none;
   transition: var(--transition-smooth);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(166, 124, 61, 0.2);
 }
 
 .social-icon:hover {
-  background: var(--gold);
-  color: #000;
+  background: var(--primary);
+  color: #fff;
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
-  border-color: var(--gold);
+  box-shadow: 0 8px 20px rgba(124, 85, 33, 0.3);
+  border-color: var(--primary);
 }
 
 .footer-links li {
@@ -187,14 +188,14 @@ export default {
 }
 
 .footer-links a {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   text-decoration: none;
   transition: var(--transition-smooth);
   font-size: 0.95rem;
 }
 
 .footer-links a:hover {
-  color: var(--gold);
+  color: var(--primary);
   padding-left: 5px;
 }
 
@@ -204,7 +205,7 @@ export default {
 }
 
 .footer-links a:hover i {
-  color: var(--gold);
+  color: var(--primary);
 }
 
 .contact-item {
@@ -212,13 +213,13 @@ export default {
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .contact-item i {
   font-size: 1.1rem;
-  color: var(--gold);
+  color: var(--primary);
   margin-top: 3px;
   flex-shrink: 0;
 }
@@ -227,12 +228,17 @@ export default {
   padding: 20px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
 }
 
 .made-with i {
-  animation: goldPulse 2s infinite;
+  animation: primaryPulse 2s infinite;
   display: inline-block;
+}
+
+@keyframes primaryPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 85, 33, 0.4); }
+  50% { box-shadow: 0 0 0 15px rgba(124, 85, 33, 0); }
 }
 
 @media (max-width: 768px) {

@@ -55,11 +55,11 @@
       </div>
 
       <div class="row stagger-children" ref="membersGrid">
-        <div
-          class="col-lg-3 col-md-4 col-sm-6 mb-4"
-          v-for="member in filteredMembers"
-          :key="member.id"
-        >
+          <div
+            class="col-6 col-lg-3 col-md-4 col-sm-6 mb-4"
+            v-for="member in filteredMembers"
+            :key="member.id"
+          >
           <div class="card member-card border-0 shadow-sm h-100">
             <div class="member-image-wrapper">
               <img :src="member.image" class="card-img-top" :alt="member.name" />
@@ -335,8 +335,8 @@ export default {
   border-radius: 25px;
   padding: 10px 24px;
   font-weight: 600;
-  border: 2px solid #dee2e6;
-  color: #495057;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(245, 240, 232, 0.7);
   background: transparent;
   transition: var(--transition-smooth);
 }

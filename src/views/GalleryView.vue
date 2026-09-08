@@ -28,20 +28,20 @@
             {{ cat }}
           </button>
         </div>
-        <button v-if="authStore.isAdminOrManager" class="btn btn-gold px-4" @click="openUploadModal">
+        <button v-if="authStore.isAdminOrManager" class="btn btn-primary px-4" @click="openUploadModal">
           <i class="bi bi-cloud-arrow-up me-2"></i>Upload Photos
         </button>
       </div>
 
       <div v-if="loading" class="text-center py-5">
-        <div class="spinner-border text-gold" role="status">
+        <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
         <p class="text-white-50 mt-3">Loading photos...</p>
       </div>
 
       <div v-else-if="error" class="text-center py-5">
-        <i class="bi bi-exclamation-triangle text-gold" style="font-size: 3rem;"></i>
+        <i class="bi bi-exclamation-triangle text-primary" style="font-size: 3rem;"></i>
         <p class="text-white-50 mt-3">{{ error }}</p>
         <button class="btn btn-outline-gold mt-2" @click="fetchPhotos">
           <i class="bi bi-arrow-clockwise me-1"></i>Retry
@@ -49,7 +49,7 @@
       </div>
 
       <div v-else-if="filteredGallery.length === 0" class="text-center py-5">
-        <i class="bi bi-images text-gold" style="font-size: 3rem;"></i>
+        <i class="bi bi-images text-primary" style="font-size: 3rem;"></i>
         <p class="text-white-50 mt-3">No photos found in this category.</p>
       </div>
 
@@ -63,7 +63,7 @@
             <img :src="photo.image" :alt="photo.title" />
             <div class="gallery-card-overlay">
               <div class="gallery-card-content">
-                <span class="badge bg-gold mb-2">{{ photo.category }}</span>
+                <span class="badge bg-primary mb-2">{{ photo.category }}</span>
                 <h5 class="fw-bold mb-1">{{ photo.title }}</h5>
                 <small>{{ formatDate(photo.date) }}</small>
               </div>
@@ -82,7 +82,7 @@
           <div class="modal-content" style="background: var(--dark); border: 1px solid rgba(255,215,0,0.1);">
             <div class="modal-header border-0">
               <h5 class="modal-title text-white">
-                <i class="bi bi-image text-gold me-2"></i>{{ selectedPhoto.title }}
+                <i class="bi bi-image text-primary me-2"></i>{{ selectedPhoto.title }}
               </h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" @click="selectedPhoto = null"></button>
             </div>
@@ -96,7 +96,7 @@
             </div>
             <div class="modal-footer border-0 justify-content-between">
               <div>
-                <span class="badge bg-gold me-2">{{ selectedPhoto.category }}</span>
+                <span class="badge bg-primary me-2">{{ selectedPhoto.category }}</span>
                 <small class="text-white-50">{{ formatDate(selectedPhoto.date) }}</small>
               </div>
               <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal" @click="selectedPhoto = null">
@@ -112,14 +112,14 @@
         <div class="upload-panel">
           <div class="upload-panel-header">
             <h5 class="text-white mb-0">
-              <i class="bi bi-cloud-arrow-up text-gold me-2"></i>Upload Photo
+              <i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload Photo
             </h5>
             <button type="button" class="btn-close btn-close-white" @click="closeUploadModal"></button>
           </div>
 
           <!-- Not configured -->
           <div v-if="!googleDrive.isOAuthConfigured()" class="upload-panel-body text-center py-5">
-            <i class="bi bi-gear text-gold" style="font-size: 2.5rem;"></i>
+            <i class="bi bi-gear text-primary" style="font-size: 2.5rem;"></i>
             <p class="text-white-50 mt-3 mb-0">Google Drive upload not configured.</p>
             <small class="text-white-50">Set <code>VITE_GOOGLE_DRIVE_CLIENT_ID</code> in .env to enable uploads.</small>
           </div>
@@ -320,7 +320,7 @@ export default {
     async function handleSignIn() {
       try {
         await googleDrive.authenticate();
-      } catch (err) {
+      } catch {
         // authError is already set by the service, no need to show duplicate
       }
     }
@@ -424,8 +424,8 @@ export default {
   border-radius: 25px;
   padding: 8px 22px;
   font-weight: 500;
-  border: 2px solid #dee2e6;
-  color: #495057;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(245, 240, 232, 0.7);
   background: transparent;
   transition: var(--transition-smooth);
 }

@@ -11,14 +11,14 @@
           <div class="col-lg-8 text-center">
             <p class="hero-subtitle text-gold fw-semibold mb-3 reveal-hero">DUX STELLA VOCE</p>
             <h1 class="display-2 fw-bold mb-4 reveal-hero" style='font-family: "Playfair Display", Georgia, serif'>
-              Where Voices<br /><span class="gold-gradient-text">Elevate</span> the Soul
+              Where Voices<br /><span class="primary-gradient-text">Elevate</span> the Soul
             </h1>
             <p class="lead mb-5 text-white-50 reveal-hero" style="animation-delay: 0.2s">
               Experience the power of unified voices creating extraordinary musical moments that
               transcend the ordinary
             </p>
             <div class="hero-buttons reveal-hero" style="animation-delay: 0.4s">
-              <router-link to="/events" class="btn btn-gold btn-lg me-3 px-4">
+              <router-link to="/events" class="btn btn-primary btn-lg me-3 px-4">
                 <i class="bi bi-calendar-event me-2"></i>Upcoming Events
               </router-link>
               <router-link to="/about" class="btn btn-outline-light btn-lg px-4">
@@ -41,7 +41,7 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6 mb-4">
-            <p class="text-gold fw-semibold mb-2 reveal">Our Story</p>
+            <p class="text-primary fw-semibold mb-2 reveal">Our Story</p>
             <h2 class="section-title reveal">About Our Choir</h2>
             <p class="lead text-muted reveal">
               Founded in 2022, Dux Stella Voce has grown from a small community ensemble to a
@@ -54,10 +54,10 @@
               daily busy lives.
             </p>
             <div class="d-flex gap-3 mt-4 reveal">
-              <router-link to="/about" class="btn btn-gold">
+              <router-link to="/about" class="btn btn-primary">
                 <i class="bi bi-arrow-right me-2"></i>Discover More
               </router-link>
-              <router-link to="/members" class="btn btn-outline-dark">
+              <router-link to="/members" class="btn btn-outline-light">
                 <i class="bi bi-people me-2"></i>Meet the Team
               </router-link>
             </div>
@@ -68,7 +68,7 @@
               <img src="/melcin_dsv.png" alt="Choir Performance"
                 class="img-fluid rounded-3 shadow-lg about-image" />
               <div class="about-experience-badge">
-                <span class="display-5 fw-bold gold-gradient-text">4+</span>
+                <span class="display-5 fw-bold primary-gradient-text">4+</span>
                 <span class="d-block text-white-50">Years of<br />Excellence</span>
               </div>
             </div>
@@ -86,7 +86,7 @@
               <div class="stat-icon mb-3">
                 <i :class="stat.icon"></i>
               </div>
-              <h2 class="display-4 fw-bold text-gold mb-1">
+              <h2 class="display-4 fw-bold text-primary mb-1">
                 <span :data-target="stat.value" class="counter">{{ animatedValues[index] }}+</span>
               </h2>
               <p class="text-muted mb-0 fw-semibold text-uppercase small">{{ stat.label }}</p>
@@ -100,7 +100,7 @@
     <section class="py-5 voice-section" ref="voiceSection">
       <div class="container">
         <div class="text-center mb-5">
-          <p class="text-gold fw-semibold mb-2 reveal">Our Voices</p>
+          <p class="text-primary fw-semibold mb-2 reveal">Our Voices</p>
           <h2 class="section-title text-center reveal">Voice Distribution</h2>
         </div>
         <div class="row stagger-children" ref="voiceGrid">
@@ -132,10 +132,10 @@
       <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <p class="text-gold fw-semibold mb-1 reveal">Don't Miss Out</p>
+            <p class="text-primary fw-semibold mb-1 reveal">Don't Miss Out</p>
             <h2 class="section-title mb-0 reveal">Upcoming Events</h2>
           </div>
-          <router-link to="/events" class="btn btn-outline-gold reveal">
+          <router-link to="/events" class="btn btn-outline-primary reveal">
             View All <i class="bi bi-arrow-right ms-1"></i>
           </router-link>
         </div>
@@ -151,7 +151,7 @@
               </div>
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                  <span class="badge bg-gold fw-semibold">{{ event.tickets }}</span>
+                  <span class="badge bg-primary fw-semibold">{{ event.tickets }}</span>
                   <small class="text-muted">
                     <i class="bi bi-clock me-1"></i>{{ event.time }}
                   </small>
@@ -164,7 +164,7 @@
                   <small class="text-muted">
                     <i class="bi bi-calendar me-1"></i>{{ formatDate(event.date) }}
                   </small>
-                  <button class="btn btn-sm btn-gold">Get Tickets</button>
+                  <button class="btn btn-sm btn-primary">Get Tickets</button>
                 </div>
               </div>
             </div>
@@ -178,10 +178,10 @@
       <div class="container mb-4">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <p class="text-gold fw-semibold mb-1 reveal">Moments Captured</p>
+            <p class="text-primary fw-semibold mb-1 reveal">Moments Captured</p>
             <h2 class="section-title mb-0 text-white reveal">Gallery Highlights</h2>
           </div>
-          <router-link to="/gallery" class="btn btn-outline-gold reveal">
+          <router-link to="/gallery" class="btn btn-outline-primary reveal">
             View Gallery <i class="bi bi-arrow-right ms-1"></i>
           </router-link>
         </div>
@@ -195,7 +195,7 @@
           >
             <img :src="photo.image" :alt="photo.title" />
             <div class="gallery-scroll-overlay">
-              <span class="badge bg-gold mb-2">{{ photo.category }}</span>
+              <span class="badge bg-primary mb-2">{{ photo.category }}</span>
               <h6 class="mb-1 fw-bold text-white">{{ photo.title }}</h6>
               <small class="text-white-50">{{ formatDate(photo.date) }}</small>
             </div>
@@ -432,9 +432,9 @@ export default {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
-      rgba(26, 26, 46, 0.85) 0%,
-      rgba(22, 33, 62, 0.75) 50%,
-      rgba(15, 52, 96, 0.8) 100%);
+      rgba(47, 23, 63, 0.85) 0%,
+      rgba(61, 31, 92, 0.75) 50%,
+      rgba(74, 36, 110, 0.8) 100%);
   z-index: 1;
 }
 
@@ -447,7 +447,7 @@ export default {
 
 .particle {
   position: absolute;
-  background: var(--gold);
+  background: var(--primary);
   border-radius: 50%;
   opacity: 0.3;
   animation: floatAround linear infinite;
@@ -506,7 +506,7 @@ export default {
 .scroll-dot {
   width: 4px;
   height: 8px;
-  background: var(--gold);
+  background: var(--primary);
   border-radius: 2px;
   position: absolute;
   top: 6px;
@@ -540,7 +540,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  border: 3px solid var(--gold);
+  border: 3px solid var(--primary);
   border-radius: 12px;
   transform: translate(10px, 10px);
   z-index: 0;
@@ -555,11 +555,11 @@ export default {
   position: absolute;
   bottom: -10px;
   right: -10px;
-  background: rgba(26, 26, 46, 0.95);
+  background: rgba(47, 23, 63, 0.95);
   backdrop-filter: blur(10px);
   padding: 20px 25px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(124, 85, 33, 0.2);
   z-index: 2;
   text-align: center;
   box-shadow: var(--shadow-elegant);
@@ -567,32 +567,32 @@ export default {
 
 /* Stats Section */
 .stats-section {
-  background: linear-gradient(135deg, var(--dark) 0%, var(--dark-secondary) 100%);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
 }
 
 .stat-card {
   padding: 30px 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(75, 36, 110, 0.1);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(166, 124, 61, 0.15);
   transition: var(--transition-smooth);
 }
 
 .stat-card:hover {
-  background: rgba(255, 215, 0, 0.08);
-  border-color: rgba(255, 215, 0, 0.2);
+  background: rgba(124, 85, 33, 0.1);
+  border-color: rgba(124, 85, 33, 0.25);
   transform: translateY(-5px);
 }
 
 .stat-icon i {
   font-size: 2rem;
-  color: var(--gold);
+  color: var(--primary);
   opacity: 0.7;
 }
 
 /* Voice Section */
 .voice-section {
-  background: #f8f9fa;
+  background: var(--bg);
 }
 
 .role-icon-circle {
@@ -658,12 +658,12 @@ export default {
   position: absolute;
   top: 15px;
   left: 15px;
-  background: rgba(26, 26, 46, 0.9);
+  background: rgba(47, 23, 63, 0.9);
   backdrop-filter: blur(8px);
   border-radius: 10px;
   padding: 10px 14px;
   text-align: center;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(124, 85, 33, 0.3);
   color: #fff;
   line-height: 1.2;
 }
@@ -672,7 +672,7 @@ export default {
   font-size: 1.3rem;
   font-weight: 800;
   display: block;
-  color: var(--gold);
+  color: var(--primary);
 }
 
 .event-month {
@@ -684,7 +684,7 @@ export default {
 
 /* Gallery Highlight - Continuous Horizontal Scroll */
 .gallery-highlight {
-  background: linear-gradient(135deg, var(--dark) 0%, #0d0d1a 100%);
+  background: linear-gradient(135deg, var(--bg) 0%, #1a0d2e 100%);
 }
 
 .gallery-scroll-wrapper {
@@ -760,10 +760,11 @@ export default {
   box-shadow: var(--shadow-hover) !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991.98px) {
   .hero-section {
-    min-height: 85vh;
-    padding-top: 76px;
+    margin-top: -60px;
+    padding-top: 60px;
+    min-height: 90vh;
   }
 
   .hero-section .display-2 {

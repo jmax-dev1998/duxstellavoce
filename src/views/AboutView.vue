@@ -20,10 +20,10 @@
             Founded in 2022, Harmony Voices has grown from a small community ensemble to a renowned choir performing at prestigious venues worldwide. Our diverse repertoire spans classical masterpieces, contemporary works, and innovative arrangements that push the boundaries of choral music.
           </p>
           <div class="d-flex gap-3 mt-4">
-            <router-link to="/events" class="btn btn-gold">
+            <router-link to="/events" class="btn btn-primary">
               <i class="bi bi-calendar-event me-2"></i>See Our Events
             </router-link>
-            <router-link to="/members" class="btn btn-outline-dark">
+            <router-link to="/members" class="btn btn-outline-light">
               <i class="bi bi-people me-2"></i>Meet Members
             </router-link>
           </div>
@@ -42,7 +42,7 @@
         <div class="col-md-4" v-for="value in values" :key="value.title">
           <div class="card border-0 shadow-sm h-100 text-center p-4">
             <div class="value-icon mb-3">
-              <i :class="value.icon" class="display-5 text-gold"></i>
+              <i :class="value.icon" class="display-5 text-primary"></i>
             </div>
             <h4 class="fw-bold mb-2">{{ value.title }}</h4>
             <p class="text-muted mb-0">{{ value.description }}</p>
@@ -63,22 +63,22 @@
           </div>
           <div class="col-md-8">
             <div class="card-body p-4 p-md-5">
-              <p class="text-gold fw-semibold mb-1">Artistic Director</p>
+              <p class="text-primary fw-semibold mb-1">Artistic Director</p>
               <h2 class="fw-bold mb-3">Maestro Alfredo Agustinus</h2>
               <p class="text-muted">
                 With over 20 years of experience in choral conducting, Maestro Alfredo has led Dux Stella Voce to international acclaim. His innovative approach blends traditional choral techniques with contemporary musical expressions.
               </p>
               <div class="row mt-4">
                 <div class="col-4">
-                  <h4 class="fw-bold text-gold mb-0">20+</h4>
+                  <h4 class="fw-bold text-primary mb-0">20+</h4>
                   <small class="text-muted">Years Experience</small>
                 </div>
                 <div class="col-4">
-                  <h4 class="fw-bold text-gold mb-0">200+</h4>
+                  <h4 class="fw-bold text-primary mb-0">200+</h4>
                   <small class="text-muted">Performances</small>
                 </div>
                 <div class="col-4">
-                  <h4 class="fw-bold text-gold mb-0">30+</h4>
+                  <h4 class="fw-bold text-primary mb-0">30+</h4>
                   <small class="text-muted">Countries</small>
                 </div>
               </div>

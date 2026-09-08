@@ -11,7 +11,7 @@
             class="d-inline-block align-text-top me-2 brand-logo"
           />
         </div>
-        <span class="fw-bold brand-text" :class="{ 'brand-text-hidden': isHome && !scrolled }">Dux <span class="gold-text">Stella</span> Voce</span>
+        <span class="fw-bold brand-text" :class="{ 'brand-text-hidden': isHome && !scrolled }">Dux <span class="primary-text">Stella</span> Voce</span>
       </router-link>
 
       <button
@@ -71,7 +71,7 @@
               </button>
             </template>
             <template v-else>
-              <router-link class="nav-link btn-gold-nav" to="/login" @click="closeNav">
+              <router-link class="nav-link btn-primary-nav" to="/login" @click="closeNav">
                 <i class="bi bi-box-arrow-in-right me-1"></i>Login
               </router-link>
             </template>
@@ -181,19 +181,19 @@ export default {
 <style scoped>
 .navbar {
   padding: 12px 0;
-  background: rgba(26, 26, 46, 0);
+  background: rgba(47, 23, 63, 0);
   transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
   z-index: 1000;
   box-sizing: border-box;
 }
 
 .navbar-scrolled {
-  background: rgba(26, 26, 46, 0.92) !important;
+  background: rgba(47, 23, 63, 0.92) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  border-bottom: 1px solid rgba(124, 85, 33, 0.15);
 }
 
 .brand-logo-wrapper {
@@ -203,20 +203,20 @@ export default {
 
 .brand-logo {
   border-radius: 50%;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--primary);
   transition: var(--transition-smooth);
 }
 
 .navbar-scrolled .brand-logo {
-  border-color: var(--gold-light);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  border-color: var(--primary-light);
+  box-shadow: 0 0 15px rgba(124, 85, 33, 0.3);
 }
 
 .brand-text {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.4rem;
   letter-spacing: 1px;
-  color: #fff;
+  color: var(--text-primary);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -226,8 +226,8 @@ export default {
   pointer-events: none;
 }
 
-.gold-text {
-  color: var(--gold);
+.primary-text {
+  color: var(--primary);
 }
 
 .nav-link {
@@ -236,7 +236,7 @@ export default {
   margin: 0 2px;
   font-weight: 500;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(245, 240, 232, 0.85) !important;
   transition: var(--transition-smooth);
   border-radius: 8px;
 }
@@ -248,7 +248,7 @@ export default {
   height: 2px;
   bottom: 2px;
   left: 50%;
-  background: var(--gold);
+  background: var(--primary);
   transition: all 0.4s ease;
   transform: translateX(-50%);
   border-radius: 2px;
@@ -261,26 +261,26 @@ export default {
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--gold) !important;
-  background: rgba(255, 215, 0, 0.08);
+  color: var(--primary) !important;
+  background: rgba(124, 85, 33, 0.1);
 }
 
 .navbar-toggler {
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(124, 85, 33, 0.3);
   padding: 8px 10px;
 }
 
 .navbar-toggler:focus {
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 0 3px rgba(124, 85, 33, 0.2);
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,215,0,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(124,85,33,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-.btn-gold-nav {
-  background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
-  color: #000 !important;
+.btn-primary-nav {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+  color: #fff !important;
   border-radius: 8px !important;
   padding: 8px 20px !important;
   margin-left: 8px;
@@ -288,14 +288,14 @@ export default {
   transition: var(--transition-smooth);
 }
 
-.btn-gold-nav:hover {
-  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
-  color: #000 !important;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+.btn-primary-nav:hover {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary)) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(124, 85, 33, 0.3);
   transform: translateY(-2px);
 }
 
-.btn-gold-nav::after {
+.btn-primary-nav::after {
   display: none !important;
 }
 
@@ -305,7 +305,7 @@ export default {
   border-radius: 8px !important;
   padding: 8px 20px !important;
   margin-left: 8px;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(245, 240, 232, 0.8) !important;
   transition: var(--transition-smooth);
   cursor: pointer;
   font-weight: 500;
@@ -313,9 +313,9 @@ export default {
 }
 
 .btn-logout:hover {
-  border-color: rgba(255, 215, 0, 0.4) !important;
-  color: var(--gold) !important;
-  background: rgba(255, 215, 0, 0.08) !important;
+  border-color: rgba(124, 85, 33, 0.4) !important;
+  color: var(--primary) !important;
+  background: rgba(124, 85, 33, 0.1) !important;
 }
 
 .btn-logout::after {
@@ -330,12 +330,12 @@ export default {
     font-size: 1.1rem;
   }
   .navbar-collapse {
-    background: rgba(26, 26, 46, 0.98);
+    background: rgba(47, 23, 63, 0.98);
     backdrop-filter: blur(20px);
     border-radius: 16px;
     padding: 16px;
     margin-top: 12px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(124, 85, 33, 0.15);
     max-height: 80vh;
     overflow-y: auto;
   }
@@ -344,7 +344,7 @@ export default {
     margin: 2px 0;
     font-size: 1rem;
   }
-  .btn-gold-nav,
+  .btn-primary-nav,
   .btn-logout {
     display: block;
     margin: 8px 0 0 0 !important;

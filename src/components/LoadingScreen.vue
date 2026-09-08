@@ -12,15 +12,15 @@
     <div class="loading-content">
       <div class="emblem">
         <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 0L25.5 14.5L40 20L25.5 25.5L20 40L14.5 25.5L0 20L14.5 14.5Z" fill="#ffd700" opacity="0.9"/>
-          <path d="M20 6L23 15L32 20L23 25L20 34L17 25L8 20L17 15Z" fill="#ffd700" opacity="0.35"/>
+          <path d="M20 0L25.5 14.5L40 20L25.5 25.5L20 40L14.5 25.5L0 20L14.5 14.5Z" fill="#7c5521" opacity="0.9"/>
+          <path d="M20 6L23 15L32 20L23 25L20 34L17 25L8 20L17 15Z" fill="#7c5521" opacity="0.35"/>
         </svg>
       </div>
 
       <div class="title-row">
-        <span class="gold-line"></span>
-        <h1 class="brand-title gold-gradient-text">DUX STELLA VOCE</h1>
-        <span class="gold-line"></span>
+        <span class="primary-line"></span>
+        <h1 class="brand-title primary-gradient-text">DUX STELLA VOCE</h1>
+        <span class="primary-line"></span>
       </div>
 
       <p class="tagline">the voice that guides the stars</p>
@@ -60,7 +60,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+  background: linear-gradient(135deg, #1a0d2e 0%, #2f173f 50%, #3d1f5c 100%);
   overflow: hidden;
 }
 
@@ -72,7 +72,7 @@ export default {
   width: 800px;
   height: 800px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle at center, rgba(124, 85, 33, 0.08) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -85,7 +85,7 @@ export default {
 .particle {
   position: absolute;
   bottom: -10px;
-  background: #ffd700;
+  background: var(--primary);
   border-radius: 50%;
   opacity: 0;
   animation: particleFloat linear infinite;
@@ -158,11 +158,11 @@ export default {
   gap: 20px;
 }
 
-.gold-line {
+.primary-line {
   display: block;
   width: 60px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
 }
 
 .brand-title {
@@ -178,7 +178,7 @@ export default {
   margin: 0;
   font-size: 0.85rem;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted);
   letter-spacing: 4px;
   text-transform: uppercase;
   font-family: "Inter", sans-serif;
@@ -194,9 +194,9 @@ export default {
 .loader-ring {
   width: 36px;
   height: 36px;
-  border: 2px solid rgba(255, 215, 0, 0.12);
-  border-top-color: #ffd700;
-  border-right-color: #ffed4a;
+  border: 2px solid rgba(124, 85, 33, 0.12);
+  border-top-color: var(--primary);
+  border-right-color: var(--primary-light);
   border-radius: 50%;
   animation: ringSpin 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
@@ -207,7 +207,7 @@ export default {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(124, 85, 33, 0.08) 0%, transparent 70%);
   animation: ringGlow 2s ease-in-out infinite;
 }
 
@@ -231,7 +231,7 @@ export default {
   margin: 0;
   font-size: 0.75rem;
   font-weight: 400;
-  color: rgba(255, 215, 0, 0.5);
+  color: rgba(124, 85, 33, 0.6);
   letter-spacing: 3px;
   font-family: "Inter", sans-serif;
 }
