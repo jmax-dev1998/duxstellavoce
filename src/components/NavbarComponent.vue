@@ -213,7 +213,7 @@ export default {
 }
 
 .brand-text {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Proza Libre', Georgia, serif;
   font-size: 1.4rem;
   letter-spacing: 1px;
   color: var(--text-primary);

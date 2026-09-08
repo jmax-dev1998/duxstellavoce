@@ -166,7 +166,7 @@ export default {
 }
 
 .brand-title {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Proza Libre", Georgia, serif;
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: 6px;
@@ -181,7 +181,7 @@ export default {
   color: var(--text-muted);
   letter-spacing: 4px;
   text-transform: uppercase;
-  font-family: "Inter", sans-serif;
+  font-family: "Proza Libre", sans-serif;
 }
 
 .loader-wrapper {
@@ -233,7 +233,7 @@ export default {
   font-weight: 400;
   color: rgba(124, 85, 33, 0.6);
   letter-spacing: 3px;
-  font-family: "Inter", sans-serif;
+  font-family: "Proza Libre", sans-serif;
 }
 
 .loading-dots span {

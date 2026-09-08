@@ -20,11 +20,8 @@
               </p>
             </div>
             <div class="social-links mt-3">
-              <a href="#" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-              <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-              <a href="#" class="social-icon" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-              <a href="#" class="social-icon" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-              <a href="#" class="social-icon" aria-label="Spotify"><i class="bi bi-spotify"></i></a>
+              <a href="https://www.instagram.com/duxstellavoce/?hl=en" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+              <a href="https://www.youtube.com/@DuxStellaVoce" class="social-icon" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
             </div>
           </div>
 
@@ -55,26 +52,14 @@
             <ul class="list-unstyled footer-contact">
               <li>
                 <div class="contact-item">
-                  <i class="bi bi-geo-alt"></i>
-                  <span>123 Music Avenue<br />New York, NY 10001</span>
-                </div>
-              </li>
-              <li>
-                <div class="contact-item">
                   <i class="bi bi-telephone"></i>
-                  <span>+1 (555) 123-4567</span>
+                  <span><a href="https://wa.me/6281332493081" target="_blank" rel="noopener noreferrer">+62 813 3249 3081</a></span>
                 </div>
               </li>
               <li>
                 <div class="contact-item">
                   <i class="bi bi-envelope"></i>
-                  <span>info@harmonyvoices.com</span>
-                </div>
-              </li>
-              <li>
-                <div class="contact-item">
-                  <i class="bi bi-clock"></i>
-                  <span>Mon-Fri: 9AM - 6PM</span>
+                  <span><a href="mailto:duxstellavoce@gmail.com">duxstellavoce@gmail.com</a></span>
                 </div>
               </li>
             </ul>
@@ -127,7 +112,7 @@ export default {
 }
 
 .footer-brand h5 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Proza Libre', Georgia, serif;
   font-size: 1.5rem;
   color: var(--text-primary);
 }

@@ -1,5 +1,82 @@
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css");
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proza Libre';
+  src: url('./fonts/Proza_Libre/ProzaLibre-ExtraBoldItalic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   --primary: #7c5521;
@@ -23,7 +100,7 @@
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Proza Libre', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow-x: hidden;
   background: var(--bg);
   color: var(--text-primary);
@@ -31,7 +108,8 @@ body {
 
 h1, h2, h3, h4, h5, h6,
 .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Proza Libre', Georgia, serif;
+  font-weight: 700;
 }
 
 ::-webkit-scrollbar { width: 8px; }

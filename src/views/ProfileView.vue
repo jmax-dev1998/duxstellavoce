@@ -636,7 +636,7 @@ export default {
 }
 
 .profile-title {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Proza Libre", Georgia, serif;
   font-size: 1.75rem;
   font-weight: 700;
   color: #fff;

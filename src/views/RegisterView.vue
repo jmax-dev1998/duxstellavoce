@@ -403,7 +403,7 @@ export default {
 }
 
 .auth-title {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Proza Libre", Georgia, serif;
   font-size: 1.85rem;
   font-weight: 700;
   color: #fff;

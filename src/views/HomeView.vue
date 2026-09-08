@@ -10,7 +10,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-8 text-center">
             <p class="hero-subtitle text-gold fw-semibold mb-3 reveal-hero">DUX STELLA VOCE</p>
-            <h1 class="display-2 fw-bold mb-4 reveal-hero" style='font-family: "Playfair Display", Georgia, serif'>
+            <h1 class="display-2 fw-bold mb-4 reveal-hero" style='font-family: "Proza Libre", Georgia, serif'>
               Where Voices<br /><span class="primary-gradient-text">Elevate</span> the Soul
             </h1>
             <p class="lead mb-5 text-white-50 reveal-hero" style="animation-delay: 0.2s">

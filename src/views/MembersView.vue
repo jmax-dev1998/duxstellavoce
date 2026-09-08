@@ -1,10 +1,10 @@
 <template>
   <div class="members-page">
-    <div class="page-header text-white py-5 mt-5">
+    <div class="page-header py-5 mt-5">
       <div class="container">
-        <p class="text-gold fw-semibold mb-2" style="letter-spacing: 3px; font-size: 0.85rem;">THE TALENTED VOICES</p>
+        <p class="text-primary fw-semibold mb-2" style="letter-spacing: 3px; font-size: 0.85rem;">THE TALENTED VOICES</p>
         <h1 class="display-4 fw-bold">Our Members</h1>
-        <p class="lead text-white-50">Meet the talented voices behind Harmony Voices Choir</p>
+        <p class="lead text-secondary">Meet the talented voices behind Dux Stella Voce</p>
       </div>
     </div>
 
@@ -48,7 +48,7 @@
               <i class="bi bi-music-note me-1"></i>Bass
             </button>
           </div>
-          <button v-if="isAdminOrManager" class="btn btn-gold w-100 w-lg-auto" @click="openAddForm">
+          <button v-if="isAdminOrManager" class="btn btn-primary w-100 w-lg-auto" @click="openAddForm">
             <i class="bi bi-plus-lg me-1"></i>Add Member
           </button>
         </div>
@@ -60,25 +60,25 @@
             v-for="member in filteredMembers"
             :key="member.id"
           >
-          <div class="card member-card border-0 shadow-sm h-100">
+          <div class="card member-card border-0 h-100">
             <div class="member-image-wrapper">
-              <img :src="member.image" class="card-img-top" :alt="member.name" />
-              <div class="member-role-badge" :class="'bg-' + getRoleColor(member.role)">
+              <img :src="member.image || getDefaultImage(member.name, member.role)" class="card-img-top" :alt="member.name" />
+              <div class="member-role-badge" :style="getRoleBadgeStyle(member.role)">
                 {{ member.role }}
               </div>
             </div>
             <div class="card-body text-center">
               <div class="member-avatar mb-3">
-                <img :src="member.image" :alt="member.name" />
+                <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
               </div>
               <h5 class="card-title fw-bold mb-1">{{ member.name }}</h5>
               <p class="text-muted small mb-2">{{ member.bio }}</p>
               <div class="d-flex align-items-center justify-content-center gap-2 text-muted" style="font-size: 0.8rem;">
-                <i class="bi bi-calendar-check text-gold"></i>
+                <i class="bi bi-calendar-check" style="color: var(--gold);"></i>
                 <span>Joined {{ formatDate(member.joinDate) }}</span>
               </div>
             </div>
-            <div class="card-footer bg-white border-0 text-center pt-0">
+            <div class="card-footer border-0 text-center pt-0" style="background: transparent;">
               <div v-if="isAdminOrManager" class="d-flex gap-2 justify-content-center mb-2">
                 <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
                   <i class="bi bi-pencil"></i>
@@ -101,7 +101,7 @@
       </div>
 
       <div v-if="filteredMembers.length === 0" class="text-center py-5">
-        <i class="bi bi-people display-1 text-muted"></i>
+        <i class="bi bi-people display-1" style="color: var(--text-muted);"></i>
         <h4 class="mt-3">No members found</h4>
         <p class="text-muted">No members in this voice category yet</p>
       </div>
@@ -109,7 +109,7 @@
       <!-- Member Modal -->
       <div class="modal fade" id="memberModal" tabindex="-1" v-if="selectedMember">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content" style="border: none; border-radius: 16px;">
+          <div class="modal-content glass-card">
             <div class="modal-header border-0">
               <h5 class="modal-title fw-bold">{{ selectedMember.name }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -117,7 +117,7 @@
             <div class="modal-body text-center">
               <div class="position-relative d-inline-block mb-3">
                 <img
-                  :src="selectedMember.image"
+                  :src="selectedMember.image || getDefaultImage(selectedMember.name, selectedMember.role)"
                   class="rounded-circle"
                   width="120"
                   height="120"
@@ -126,15 +126,15 @@
                 />
               </div>
               <h4 class="fw-bold">{{ selectedMember.name }}</h4>
-              <span class="badge bg-gold mb-3 px-3 py-2">{{ selectedMember.role }}</span>
+              <span class="badge mb-3 px-3 py-2" :style="getRoleBadgeStyle(selectedMember.role)">{{ selectedMember.role }}</span>
               <p class="text-muted mt-2">{{ selectedMember.bio }}</p>
               <div class="d-flex align-items-center justify-content-center gap-2 text-muted">
-                <i class="bi bi-calendar-check text-gold"></i>
+                <i class="bi bi-calendar-check" style="color: var(--gold);"></i>
                 <span>Member since {{ formatDate(selectedMember.joinDate) }}</span>
               </div>
             </div>
             <div class="modal-footer border-0 justify-content-center">
-              <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 <i class="bi bi-x-lg me-1"></i>Close
               </button>
             </div>
@@ -145,7 +145,7 @@
       <!-- Add / Edit Member Modal -->
       <div class="modal fade" id="memberFormModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content" style="border: none; border-radius: 16px;">
+          <div class="modal-content glass-card">
             <div class="modal-header border-0">
               <h5 class="modal-title fw-bold">{{ editingId ? 'Edit Member' : 'Add Member' }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -153,12 +153,12 @@
             <div class="modal-body">
               <form @submit.prevent="saveMember">
                 <div class="mb-3">
-                  <label class="form-label fw-semibold">Name</label>
-                  <input v-model="form.name" class="form-control" required placeholder="Full name" />
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Name</label>
+                  <input v-model="form.name" class="form-control theme-input" required placeholder="Full name" />
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-semibold">Role</label>
-                  <select v-model="form.role" class="form-select" required>
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Role</label>
+                  <select v-model="form.role" class="form-select theme-select" required>
                     <option value="" disabled>Select voice role...</option>
                     <option>Soprano</option>
                     <option>Alto</option>
@@ -167,24 +167,24 @@
                   </select>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-semibold">Image URL</label>
-                  <input v-model="form.image" class="form-control" placeholder="https://..." />
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Image URL</label>
+                  <input v-model="form.image" class="form-control theme-input" placeholder="https://..." />
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-semibold">Bio</label>
-                  <textarea v-model="form.bio" class="form-control" rows="3" placeholder="Short description"></textarea>
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Bio</label>
+                  <textarea v-model="form.bio" class="form-control theme-input" rows="3" placeholder="Short description"></textarea>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-semibold">Join Date</label>
-                  <input v-model="form.joinDate" type="date" class="form-control" required />
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Join Date</label>
+                  <input v-model="form.joinDate" type="date" class="form-control theme-input" required />
                 </div>
               </form>
             </div>
             <div class="modal-footer border-0 justify-content-center gap-2">
-              <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 <i class="bi bi-x-lg me-1"></i>Cancel
               </button>
-              <button type="button" class="btn btn-gold" @click="saveMember">
+              <button type="button" class="btn btn-primary" @click="saveMember">
                 <i class="bi bi-check-lg me-1"></i>{{ editingId ? 'Update' : 'Save' }}
               </button>
             </div>
@@ -288,8 +288,24 @@ export default {
     };
 
     const getRoleColor = (role) => {
-      const colors = { Soprano: "danger", Alto: "success", Tenor: "warning", Bass: "primary" };
-      return colors[role] || "secondary";
+      const colors = { Soprano: "#dc3545", Alto: "#198754", Tenor: "#ffc107", Bass: "#0d6efd" };
+      return colors[role] || "#6c757d";
+    };
+
+    const getRoleBadgeStyle = (role) => {
+      const color = getRoleColor(role);
+      return {
+        backgroundColor: color,
+        color: role === 'Tenor' ? '#000' : '#fff',
+        borderColor: color
+      };
+    };
+
+    const getDefaultImage = (name, role) => {
+      const bgColors = { Soprano: 'dc3545', Alto: '198754', Tenor: 'ffc107', Bass: '0d6efd' };
+      const bg = bgColors[role] || '6c757d';
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=${bg}&color=fff&size=200&font-size=0.5&bold=true`;
     };
 
     watch(() => authStore.user, (newUser) => {
@@ -318,7 +334,7 @@ export default {
       formModal = new Modal(document.getElementById("memberFormModal"));
     });
 
-    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor };
+    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor, getRoleBadgeStyle, getDefaultImage };
   },
 };
 </script>
@@ -335,21 +351,24 @@ export default {
   border-radius: 25px;
   padding: 10px 24px;
   font-weight: 600;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  color: rgba(245, 240, 232, 0.7);
-  background: transparent;
+  border: 2px solid var(--glass-border);
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
   transition: var(--transition-smooth);
 }
 
 .role-pill:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-elegant);
+  border-color: var(--gold);
+  color: var(--text-primary);
 }
 
 .role-pill.active {
   border-color: var(--gold);
   background: var(--gold);
-  color: #000;
+  color: var(--dark);
 }
 
 .role-pill.role-soprano.active { border-color: #dc3545; background: #dc3545; color: #fff; }
@@ -361,11 +380,16 @@ export default {
   transition: var(--transition-smooth);
   overflow: hidden;
   border-radius: 16px;
+  background: rgba(47, 23, 63, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
 }
 
 .member-card:hover {
   transform: translateY(-12px);
   box-shadow: var(--shadow-hover) !important;
+  border-color: var(--primary);
 }
 
 .member-image-wrapper {
@@ -379,23 +403,25 @@ export default {
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
-  filter: brightness(0.7);
+  filter: brightness(0.65);
 }
 
 .member-card:hover .member-image-wrapper img {
   transform: scale(1.15);
+  filter: brightness(0.8);
 }
 
 .member-role-badge {
   position: absolute;
   top: 15px;
   right: 15px;
-  padding: 5px 16px;
+  padding: 6px 18px;
   border-radius: 20px;
-  color: white;
   font-weight: 600;
-  font-size: 0.8rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-size: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .member-avatar {
@@ -409,8 +435,127 @@ export default {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border: 4px solid var(--bg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-body {
+  padding: 2rem 1.5rem 1rem;
+}
+
+.card-title {
+  color: var(--text-primary) !important;
+}
+
+.card-text, .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+.card-footer {
+  padding: 0 1.5rem 1.5rem !important;
+}
+
+.btn-outline-gold {
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  background: transparent;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: var(--dark);
+  box-shadow: 0 8px 25px rgba(212, 168, 83, 0.3);
+  transform: translateY(-3px);
+}
+
+.btn-outline-primary {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(124, 85, 33, 0.3);
+}
+
+.btn-outline-danger {
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  background: transparent;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.theme-input,
+.theme-select {
+  background: var(--bg-secondary) !important;
+  border: 2px solid var(--glass-border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: var(--transition-smooth);
+}
+
+.theme-input:focus,
+.theme-select:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.15) !important;
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.form-label {
+  color: var(--text-primary) !important;
+}
+
+.modal-content {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text-primary);
+}
+
+.modal-header,
+.modal-footer,
+.modal-body {
+  border-color: var(--glass-border) !important;
+}
+
+.btn-close {
+  filter: invert(1) opacity(0.7);
+  transition: var(--transition-smooth);
+}
+
+.btn-close:hover {
+  filter: invert(1) opacity(1);
 }
 
 @media (max-width: 768px) {
