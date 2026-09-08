@@ -19,7 +19,7 @@
 
       <div class="title-row">
         <span class="primary-line"></span>
-        <h1 class="brand-title primary-gradient-text">DUX STELLA VOCE</h1>
+        <h1 class="brand-title primary-gradient-text"><img src="/logo_dsv_putih.webp" width="auto" height="100" alt="Dux Stella Voce" class="brand-logo"></h1>
         <span class="primary-line"></span>
       </div>
 
