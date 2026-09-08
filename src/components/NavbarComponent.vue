@@ -4,7 +4,7 @@
       <router-link class="navbar-brand d-flex align-items-center" to="/">
         <div class="brand-logo-wrapper">
           <img
-            src="/logodummy_dsv.png"
+            src="/logo_dsv.png"
             alt="Logo"
             width="40"
             height="40"
