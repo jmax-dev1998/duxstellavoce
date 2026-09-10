@@ -6,7 +6,7 @@
           <div class="col-lg-4 mb-4">
             <div class="footer-brand">
               <img
-                src="/logodummy_dsv.png"
+                src="/logo_dsv.png"
                 alt="Logo"
                 width="50"
                 height="50"

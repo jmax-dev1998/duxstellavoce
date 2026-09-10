@@ -11,6 +11,29 @@
     <div class="container py-5">
       <div class="mb-4">
         <div class="d-flex flex-wrap justify-content-center justify-content-lg-between align-items-center gap-2">
+          <div class="d-flex align-items-center gap-3 mb-3 mb-lg-0">
+            <span class="fw-semibold text-secondary small" style="letter-spacing: 1px;">VIEW</span>
+            <div class="btn-group" role="group">
+              <button
+                type="button"
+                class="btn btn-sm view-toggle-btn"
+                :class="viewMode === 'simple' ? 'active' : ''"
+                @click="viewMode = 'simple'"
+                title="Simple View"
+              >
+                <i class="bi bi-list"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm view-toggle-btn"
+                :class="viewMode === 'grid' ? 'active' : ''"
+                @click="viewMode = 'grid'"
+                title="Grid View"
+              >
+                <i class="bi bi-grid"></i>
+              </button>
+            </div>
+          </div>
           <div class="role-pills">
             <button
               class="btn role-pill"
@@ -54,7 +77,41 @@
         </div>
       </div>
 
-      <div class="row stagger-children" ref="membersGrid">
+      <div v-if="viewMode === 'simple'" class="simple-view">
+          <div class="voice-section" v-for="role in ['Soprano', 'Alto', 'Tenor', 'Bass']" :key="role">
+            <h3 class="voice-section-title" :style="{ borderColor: getRoleColor(role) }">
+              <i class="bi bi-music-note me-2"></i>{{ role }}
+              <span class="voice-count ms-2" :style="{ backgroundColor: getRoleColor(role) }">
+                {{ filteredMembers.filter(m => m.role === role).length }}
+              </span>
+            </h3>
+            <ul class="member-list" v-if="filteredMembers.some(m => m.role === role)">
+              <li v-for="member in filteredMembers.filter(m => m.role === role)" :key="member.id" class="member-list-item">
+                <div class="member-avatar-sm">
+                  <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
+                </div>
+                <div class="member-info">
+                  <span class="member-name fw-semibold">{{ member.name }}</span>
+                  <span v-if="member.bio" class="member-bio text-muted small">{{ member.bio }}</span>
+                </div>
+                <div class="member-actions" v-if="isAdminOrManager">
+                  <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(member)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+                <button class="btn btn-sm btn-outline-gold" @click="selectedMember = member" data-bs-toggle="modal" data-bs-target="#memberModal">
+                  <i class="bi bi-person-badge me-1"></i>View
+                </button>
+              </li>
+            </ul>
+            <p v-else class="text-muted text-center py-3 small">No members in this section yet</p>
+          </div>
+        </div>
+
+        <div v-else class="row stagger-children" ref="membersGrid">
           <div
             class="col-6 col-lg-3 col-md-4 col-sm-6 mb-4"
             v-for="member in filteredMembers"
@@ -213,6 +270,7 @@ export default {
     const form = ref({ name: "", role: "", image: "", bio: "", joinDate: "" });
     const editingId = ref(null);
     const userRole = ref(null);
+    const viewMode = ref("simple");
 
     let formModal = null;
 
@@ -334,7 +392,7 @@ export default {
       formModal = new Modal(document.getElementById("memberFormModal"));
     });
 
-    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor, getRoleBadgeStyle, getDefaultImage };
+    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor, getRoleBadgeStyle, getDefaultImage, viewMode };
   },
 };
 </script>
@@ -585,6 +643,166 @@ export default {
   }
   .role-pill i {
     display: none;
+  }
+}
+
+.view-toggle-btn {
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+  backdrop-filter: blur(10px);
+}
+
+.view-toggle-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.view-toggle-btn.active {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--dark);
+}
+
+.simple-view {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.voice-section {
+  margin-bottom: 3rem;
+}
+
+.voice-section-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.voice-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.member-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  transition: var(--transition-smooth);
+  backdrop-filter: blur(10px);
+}
+
+.member-list-item:hover {
+  transform: translateX(8px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-elegant);
+}
+
+.member-avatar-sm {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--glass-border);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.member-avatar-sm img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.member-name {
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-bio {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .voice-section-title {
+    font-size: 1.25rem;
+  }
+  .member-list-item {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .member-info {
+    flex: 1 1 calc(100% - 70px);
+  }
+  .member-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+  .btn-outline-gold {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .member-list-item {
+    padding: 0.75rem;
+  }
+  .member-avatar-sm {
+    width: 40px;
+    height: 40px;
+  }
+  .voice-section-title {
+    font-size: 1.1rem;
   }
 }
 </style>
