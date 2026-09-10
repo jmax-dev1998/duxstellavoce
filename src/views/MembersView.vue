@@ -21,16 +21,16 @@
                 @click="viewMode = 'simple'"
                 title="Simple View"
               >
-                <i class="bi bi-list"></i>
+                <i class="bi bi-list-ul"></i>
               </button>
               <button
                 type="button"
                 class="btn btn-sm view-toggle-btn"
                 :class="viewMode === 'grid' ? 'active' : ''"
                 @click="viewMode = 'grid'"
-                title="Grid View"
+                title="List View"
               >
-                <i class="bi bi-grid"></i>
+                <i class="bi bi-list-columns-reverse"></i>
               </button>
             </div>
           </div>
@@ -80,82 +80,47 @@
       <div v-if="viewMode === 'simple'" class="simple-view">
           <div class="voice-section" v-for="role in ['Soprano', 'Alto', 'Tenor', 'Bass']" :key="role">
             <h3 class="voice-section-title" :style="{ borderColor: getRoleColor(role) }">
-              <i class="bi bi-music-note me-2"></i>{{ role }}
-              <span class="voice-count ms-2" :style="{ backgroundColor: getRoleColor(role) }">
-                {{ filteredMembers.filter(m => m.role === role).length }}
-              </span>
+              {{ role }}
             </h3>
-            <ul class="member-list" v-if="filteredMembers.some(m => m.role === role)">
-              <li v-for="member in filteredMembers.filter(m => m.role === role)" :key="member.id" class="member-list-item">
-                <div class="member-avatar-sm">
-                  <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
-                </div>
-                <div class="member-info">
-                  <span class="member-name fw-semibold">{{ member.name }}</span>
-                  <span v-if="member.bio" class="member-bio text-muted small">{{ member.bio }}</span>
-                </div>
-                <div class="member-actions" v-if="isAdminOrManager">
-                  <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(member)" title="Delete">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-                <button class="btn btn-sm btn-outline-gold" @click="selectedMember = member" data-bs-toggle="modal" data-bs-target="#memberModal">
-                  <i class="bi bi-person-badge me-1"></i>View
-                </button>
-              </li>
-            </ul>
+            <p v-if="filteredMembers.some(m => m.role === role)" class="member-sentence">
+              {{ filteredMembers.filter(m => m.role === role).map(m => m.name).join(', ') }}
+            </p>
             <p v-else class="text-muted text-center py-3 small">No members in this section yet</p>
           </div>
         </div>
 
-        <div v-else class="row stagger-children" ref="membersGrid">
-          <div
-            class="col-6 col-lg-3 col-md-4 col-sm-6 mb-4"
-            v-for="member in filteredMembers"
-            :key="member.id"
-          >
-          <div class="card member-card border-0 h-100">
-            <div class="member-image-wrapper">
-              <img :src="member.image || getDefaultImage(member.name, member.role)" class="card-img-top" :alt="member.name" />
-              <div class="member-role-badge" :style="getRoleBadgeStyle(member.role)">
-                {{ member.role }}
-              </div>
-            </div>
-            <div class="card-body text-center">
-              <div class="member-avatar mb-3">
-                <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
-              </div>
-              <h5 class="card-title fw-bold mb-1">{{ member.name }}</h5>
-              <p class="text-muted small mb-2">{{ member.bio }}</p>
-              <div class="d-flex align-items-center justify-content-center gap-2 text-muted" style="font-size: 0.8rem;">
-                <i class="bi bi-calendar-check" style="color: var(--gold);"></i>
-                <span>Joined {{ formatDate(member.joinDate) }}</span>
-              </div>
-            </div>
-            <div class="card-footer border-0 text-center pt-0" style="background: transparent;">
-              <div v-if="isAdminOrManager" class="d-flex gap-2 justify-content-center mb-2">
-                <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(member)" title="Delete">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </div>
-              <button
-                class="btn btn-outline-gold btn-sm px-4"
-                @click="selectedMember = member"
-                data-bs-toggle="modal"
-                data-bs-target="#memberModal"
-              >
-                <i class="bi bi-person-badge me-1"></i>View Profile
-              </button>
+        <div v-else class="list-view-alt row">
+          <div class="col-12">
+            <div class="voice-section" v-for="role in ['Soprano', 'Alto', 'Tenor', 'Bass']" :key="role">
+              <h3 class="voice-section-title" :style="{ borderColor: getRoleColor(role) }">
+                {{ role }}
+              </h3>
+              <ul v-if="filteredMembers.some(m => m.role === role)" class="member-list">
+                <li v-for="member in filteredMembers.filter(m => m.role === role)" :key="member.id" class="member-list-item">
+                  <div class="member-avatar-sm">
+                    <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
+                  </div>
+                  <div class="member-info">
+                    <span class="member-name fw-semibold">{{ member.name }}</span>
+                    <span v-if="member.bio" class="member-bio text-muted small">{{ member.bio }}</span>
+                  </div>
+                  <div class="member-actions" v-if="isAdminOrManager">
+                    <button class="btn btn-sm btn-outline-primary" @click="openEditForm(member)" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(member)" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                  <button class="btn btn-sm btn-outline-gold" @click="selectedMember = member" data-bs-toggle="modal" data-bs-target="#memberModal">
+                    <i class="bi bi-person-badge me-1"></i>View
+                  </button>
+                </li>
+              </ul>
+              <p v-else class="text-muted text-center py-3 small">No members in this section yet</p>
             </div>
           </div>
         </div>
-      </div>
 
       <div v-if="filteredMembers.length === 0" class="text-center py-5">
         <i class="bi bi-people display-1" style="color: var(--text-muted);"></i>
@@ -265,7 +230,6 @@ export default {
     const authStore = useAuthStore();
     const activeFilter = ref("All");
     const selectedMember = ref(null);
-    const membersGrid = ref(null);
     const members = ref([]);
     const form = ref({ name: "", role: "", image: "", bio: "", joinDate: "" });
     const editingId = ref(null);
@@ -372,19 +336,6 @@ export default {
     });
 
     onMounted(async () => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("revealed");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      if (membersGrid.value) observer.observe(membersGrid.value);
-
       await fetchMembers();
 
       if (authStore.user) await fetchUserRole(authStore.user.uid);
@@ -392,7 +343,7 @@ export default {
       formModal = new Modal(document.getElementById("memberFormModal"));
     });
 
-    return { activeFilter, selectedMember, membersGrid, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor, getRoleBadgeStyle, getDefaultImage, viewMode };
+    return { activeFilter, selectedMember, members, form, editingId, isAdminOrManager, filteredMembers, openAddForm, openEditForm, saveMember, confirmDelete, formatDate, getRoleColor, getRoleBadgeStyle, getDefaultImage, viewMode };
   },
 };
 </script>
@@ -693,6 +644,48 @@ export default {
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.member-sentence {
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+  padding: 0.75rem 0;
+}
+
+.list-view-alt {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.list-view-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.list-view-row {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  transition: var(--transition-smooth);
+}
+
+.list-view-row:hover {
+  transform: translateX(6px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-elegant);
+}
+
+.member-name-only {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .voice-count {

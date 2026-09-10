@@ -593,6 +593,10 @@ export default {
 </script>
 
 <style scoped>
+.library-page {
+  color: var(--text-primary);
+}
+
 .search-wrapper {
   position: relative;
 }
@@ -606,31 +610,42 @@ export default {
   z-index: 4;
 }
 
+.library-page .form-control,
+.library-page .form-select,
+.library-page .form-check-input,
+.search-input,
+.form-select-custom {
+  background: var(--bg-secondary) !important;
+  border: 2px solid var(--glass-border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+.library-page .form-control::placeholder,
+.search-input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.search-input,
+.form-select-custom {
+  padding-left: 44px;
+  height: 48px;
+  font-size: 0.95rem;
+}
+
 .search-input {
   padding-left: 44px;
-  border-radius: 10px;
-  border: 2px solid #e0e0e0;
-  height: 48px;
-  font-size: 0.95rem;
-  transition: var(--transition-smooth);
 }
 
-.search-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.15);
-}
-
-.form-select-custom {
-  height: 48px;
-  border-radius: 10px;
-  border: 2px solid #e0e0e0;
-  font-size: 0.95rem;
-  transition: var(--transition-smooth);
-}
-
-.form-select-custom:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.15);
+.search-input:focus,
+.form-select-custom:focus,
+.library-page .form-control:focus,
+.library-page .form-select:focus,
+.library-page .form-check-input:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 0.2rem rgba(212, 168, 83, 0.15) !important;
+  background: var(--bg-tertiary) !important;
 }
 
 .btn-gold {
@@ -643,38 +658,57 @@ export default {
 }
 
 .btn-gold:hover {
-  background: #e6c200;
-  border-color: #e6c200;
+  background: var(--gold-light);
+  border-color: var(--gold-light);
   color: #000;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(212, 168, 83, 0.3);
 }
 
-.library-table th {
-  background: #f8f9fa;
+.library-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.library-table thead th {
+  background: rgba(75, 36, 110, 0.85);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #6c757d;
+  color: var(--text-primary);
   border-bottom: 2px solid var(--gold);
   padding: 14px 16px;
 }
 
-.library-table td {
+.library-table tbody td {
   vertical-align: middle;
   padding: 14px 16px;
+  color: var(--text-primary);
+  background: rgba(47, 23, 63, 0.55);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.library-table tbody tr:nth-child(even) td {
+  background: rgba(61, 31, 92, 0.45);
+}
+
+.library-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .library-row {
   transition: var(--transition-smooth);
 }
 
-.library-row:hover {
-  background: rgba(255, 215, 0, 0.04);
+.library-row:hover td {
+  background: rgba(212, 168, 83, 0.08);
 }
 
 .genre-badge {
-  background: rgba(255, 215, 0, 0.12);
-  color: #856404;
+  background: rgba(212, 168, 83, 0.18);
+  border: 1px solid rgba(212, 168, 83, 0.5);
+  color: var(--gold-light);
   font-weight: 500;
   padding: 6px 14px;
   border-radius: 20px;
@@ -687,18 +721,18 @@ export default {
 }
 
 .diff-beginner {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(25, 135, 84, 0.22);
+  color: #a8f0c4;
 }
 
 .diff-intermediate {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffe59a;
 }
 
 .diff-advanced {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(220, 53, 69, 0.2);
+  color: #ffb4bb;
 }
 
 /* ─── Lightbox ─── */
