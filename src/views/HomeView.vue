@@ -151,7 +151,7 @@
               </div>
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                  <span class="badge bg-primary fw-semibold">{{ event.tickets }}</span>
+                  <span class="badge bg-primary fw-semibold">{{ event.tickets || event.type }}</span>
                   <small class="text-muted">
                     <i class="bi bi-clock me-1"></i>{{ event.time }}
                   </small>
@@ -164,7 +164,7 @@
                   <small class="text-muted">
                     <i class="bi bi-calendar me-1"></i>{{ formatDate(event.date) }}
                   </small>
-                  <button class="btn btn-sm btn-primary">Get Tickets</button>
+                  <button v-if="!event.type || event.type === 'Concert'" class="btn btn-sm btn-primary">Get Tickets</button>
                 </div>
               </div>
             </div>

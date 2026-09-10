@@ -55,8 +55,8 @@
               <div class="col-md-8">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
-                    <span class="badge event-badge" :style="getTicketBadgeStyle(event.tickets)">
-                      {{ event.tickets }}
+                    <span class="badge event-badge" :style="getTicketBadgeStyle(event.tickets || event.type)">
+                      {{ event.tickets || event.type }}
                     </span>
                     <div v-if="authStore.isAdminOrManager" class="d-flex gap-1">
                       <button class="btn btn-sm btn-outline-primary" @click="openEditForm(event)" title="Edit">
@@ -83,7 +83,7 @@
                     </div>
                   </div>
                   <p class="card-text text-muted mt-3">{{ event.description }}</p>
-                  <button class="btn btn-outline-gold mt-2">
+                  <button v-if="!event.type || event.type === 'Concert'" class="btn btn-outline-gold mt-2">
                     <i class="bi bi-ticket me-1"></i>Get Tickets
                   </button>
                 </div>
@@ -184,7 +184,18 @@
                   <input v-model="form.title" class="form-control theme-input" required placeholder="Event title" />
                 </div>
                 <div class="col-md-4 mb-3">
-                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Tickets</label>
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Type</label>
+                  <select v-model="form.type" class="form-select theme-select" required>
+                    <option value="Concert">Concert</option>
+                    <option value="Rehearsal">Rehearsal</option>
+                    <option value="Services">Services</option>
+                    <option value="Invitation">Invitation</option>
+                  </select>
+                </div>
+              </div>
+              <div v-if="form.type === 'Concert'" class="row">
+                <div class="col-md-12 mb-3">
+                  <label class="form-label fw-semibold" style="color: var(--text-primary);">Ticketing</label>
                   <select v-model="form.tickets" class="form-select theme-select" required>
                     <option value="Free">Free</option>
                     <option value="Paid">Paid</option>
@@ -239,7 +250,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { db } from "../firebase";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, deleteField } from "firebase/firestore";
 import { Modal } from "bootstrap";
 
 export default {
@@ -248,7 +259,7 @@ export default {
     const authStore = useAuthStore();
     const activeFilter = ref("All");
     const events = ref([]);
-    const form = ref({ title: "", date: "", time: "", venue: "", location: "", description: "", image: "", tickets: "Free" });
+    const form = ref({ title: "", date: "", time: "", venue: "", location: "", description: "", image: "", type: "Concert", tickets: "Free" });
     const editingId = ref(null);
     const selectedDate = ref(null);
 
@@ -281,7 +292,7 @@ export default {
 
     const openAddForm = () => {
       editingId.value = null;
-      form.value = { title: "", date: "", time: "", venue: "", location: "", description: "", image: "", tickets: "Free" };
+      form.value = { title: "", date: "", time: "", venue: "", location: "", description: "", image: "", type: "Concert", tickets: "Free" };
       formModal.show();
     };
 
@@ -295,14 +306,15 @@ export default {
         location: event.location,
         description: event.description || "",
         image: event.image || "",
-        tickets: event.tickets,
+        type: event.type || "Concert",
+        tickets: event.tickets || "Free",
       };
       formModal.show();
     };
 
     const saveEvent = async () => {
       try {
-        const data = {
+        const baseData = {
           title: form.value.title,
           date: form.value.date,
           time: form.value.time,
@@ -310,12 +322,24 @@ export default {
           location: form.value.location,
           description: form.value.description,
           image: form.value.image || `https://picsum.photos/800/400?random=${Math.floor(Math.random() * 100)}`,
-          tickets: form.value.tickets,
+          type: form.value.type,
         };
+
+        if (form.value.type === "Concert") {
+          baseData.tickets = form.value.tickets;
+        }
+
         if (editingId.value) {
-          await updateDoc(doc(db, "events", editingId.value), data);
+          if (form.value.type === "Concert") {
+            await updateDoc(doc(db, "events", editingId.value), baseData);
+          } else {
+            await updateDoc(doc(db, "events", editingId.value), {
+              ...baseData,
+              tickets: deleteField(),
+            });
+          }
         } else {
-          await addDoc(collection(db, "events"), data);
+          await addDoc(collection(db, "events"), baseData);
         }
         formModal.hide();
         await fetchEvents();
