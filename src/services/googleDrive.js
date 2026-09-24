@@ -109,7 +109,7 @@ async function uploadViaBackend(file, { title, category, folderId } = {}) {
   formData.append("file", file);
   if (title) formData.append("name", title);
   if (category) formData.append("category", category);
-  if (folderId || CONFIG.IMG_FOLDER_ID) formData.append("folder", folderId || CONFIG.IMG_FOLDER_ID);
+  if (folderId) formData.append("folder", folderId);
 
   const url = `${CONFIG.API_BASE_URL}/api/drive.php?action=upload`;
   const res = await fetch(url, { method: "POST", body: formData });
@@ -123,7 +123,7 @@ async function uploadViaBackend(file, { title, category, folderId } = {}) {
 async function uploadWithOAuth(file, metadata) {
   const token = await getAccessToken();
 
-  const folderId = metadata.folderId || CONFIG.IMG_FOLDER_ID;
+  const folderId = metadata.folderId;
   const metadataObj = { name: metadata.title || file.name };
   if (folderId) metadataObj.parents = [folderId];
 
