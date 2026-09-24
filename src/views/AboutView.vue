@@ -4,7 +4,7 @@
       <div class="container">
         <p class="text-primary fw-semibold mb-2" style="letter-spacing: 3px; font-size: 0.85rem;">WHO WE ARE</p>
         <h1 class="display-4 fw-bold">About Us</h1>
-        <p class="lead text-secondary">Discover our story, mission, and the people behind the music</p>
+        <p class="lead text-white-50">Discover our story, mission, and the people behind the music</p>
       </div>
     </div>
 
@@ -13,13 +13,13 @@
       <div class="row align-items-center mb-5">
         <div class="col-lg-6 mb-4">
           <h2 class="section-title">Our Mission</h2>
-          <p class="lead text-secondary">
+          <p class="lead text-white-50">
             Dux Stella Voce (DSV) is an independent choir formed by alumni of university choirs from across Indonesia. Born from a shared passion for singing together, DSV provides a space for members to express their love for music, unwind, and build lasting friendships.
           </p>
-          <p class="text-secondary">
+          <p class="text-white-50">
             Through its involvement in church services, wedding choirs, concerts, and backing vocals, DSV has also established a strong presence on the international stage. Its achievements include a Silver Medal at the Singapore International Choral Festival 2023 the Grand Champion title at the Penabur International Choir Festival 2024. In 2025, DSV once again stepped onto the international stage as a Grand Prix Finalist at the Tokyo International Choir Competition 2025, where it received several accolades, including The Winner of the Mixed Choir and Contemporary Music categories, as well as Special Prizes in Music Interpretation. These achievements led DSV to represent Indonesia as one of the international choirs invited to participate in the 2nd Gyeongnam International Choir Festival 2026, held across the cities of Jinju, Gimhae, and Changwon.
           </p>
-          <p class="text-secondary">Driven by a strong passion for music and a commitment to excellence, DSV continues to deliver high-quality performances and bring meaning to every moment of singing together.</p>
+          <p class="text-white-50">Driven by a strong passion for music and a commitment to excellence, DSV continues to deliver high-quality performances and bring meaning to every moment of singing together.</p>
           <div class="d-flex gap-3 mt-4">
             <router-link to="/events" class="btn btn-primary">
               <i class="bi bi-calendar-event me-2"></i>See Our Events
@@ -88,7 +88,7 @@
             <div class="card-body p-4 p-md-5">
               <p class="fw-semibold mb-1" style="color: var(--gold);">Artistic Director</p>
               <h2 class="fw-bold mb-3">Maestro Alfredo Agustinus</h2>
-              <p class="text-secondary">
+              <p class="text-white-50">
                 Since 2014, Alfredo has continued to develop his skills in vocal performance and conducting under the guidance of renowned local and international maestros, including Tommyanto Kandisaputra (Indonesia), Masashi Kishimoto (Japan), and Nicolas Fink (Germany). With Dux Stella Voce, he has led the choir to notable achievements, including the Grand Champion title at the Penabur International Choir Festival 2024, and Grand Prix Finalist at the Tokyo International Choir Competition 2025, where the choir also received several awards for repertoire interpretation.
               </p>
               <div class="row mt-4">

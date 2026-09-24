@@ -40,10 +40,6 @@
             <h6 class="fw-bold mb-3 footer-heading">Support</h6>
             <ul class="list-unstyled footer-links">
               <li><router-link to="/about"><i class="bi bi-chevron-right me-1"></i>About Us</router-link></li>
-              <li><a href="#"><i class="bi bi-chevron-right me-1"></i>FAQ</a></li>
-              <li><a href="#"><i class="bi bi-chevron-right me-1"></i>Privacy Policy</a></li>
-              <li><a href="#"><i class="bi bi-chevron-right me-1"></i>Terms of Service</a></li>
-              <li><a href="#"><i class="bi bi-chevron-right me-1"></i>Contact</a></li>
             </ul>
           </div>
 
