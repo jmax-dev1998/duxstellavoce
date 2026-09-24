@@ -160,7 +160,19 @@ async function uploadWithOAuth(file, metadata) {
     throw new Error(`Upload failed (${res.status}): ${text.slice(0, 200)}`);
   }
 
-  return res.json();
+  const driveFile = await res.json();
+
+  // Make the file publicly readable so thumbnail/direct URLs work without auth
+  await fetch(`https://www.googleapis.com/drive/v3/files/${driveFile.id}/permissions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ role: "reader", type: "anyone" }),
+  });
+
+  return driveFile;
 }
 
 // --- OAuth helpers ---
@@ -257,6 +269,28 @@ export async function deleteFile(fileId) {
   if (!res.ok && res.status !== 404) {
     const text = await res.text();
     throw new Error(`Delete failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+}
+
+/**
+ * Make an existing Drive file publicly readable (anyoneWithLink → reader).
+ * Useful for files uploaded before the auto-share fix.
+ * @param {string} fileId
+ */
+export async function makeFilePublic(fileId) {
+  if (!CONFIG.CLIENT_ID) throw new Error("OAuth not configured.");
+  const token = await getAccessToken();
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ role: "reader", type: "anyone" }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`makeFilePublic failed (${res.status}): ${text.slice(0, 200)}`);
   }
 }
 

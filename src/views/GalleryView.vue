@@ -29,7 +29,7 @@
           </button>
         </div>
         <button v-if="authStore.isAdminOrManager" class="btn btn-primary px-4" @click="openUploadModal">
-          <i class="bi bi-cloud-arrow-up me-2"></i>Upload Photos
+          <i class="bi bi-plus-lg me-2"></i>Add Gallery
         </button>
       </div>
 
@@ -59,7 +59,7 @@
           v-for="photo in filteredGallery"
           :key="photo.id"
         >
-          <div class="gallery-card" @click="openLightbox(photo)">
+          <div class="gallery-card" @click="onCardClick(photo)">
             <img :src="photo.image" :alt="photo.title" />
             <div class="gallery-card-overlay">
               <div class="gallery-card-content">
@@ -67,6 +67,15 @@
                 <h5 class="fw-bold mb-1">{{ photo.title }}</h5>
                 <small>{{ formatDate(photo.date) }}</small>
               </div>
+              <!-- Edit badge for admins -->
+              <button
+                v-if="authStore.isAdminOrManager"
+                class="gallery-edit-btn"
+                @click.stop="openEditModal(photo)"
+                title="Edit photo"
+              >
+                <i class="bi bi-pencil-fill"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -112,7 +121,7 @@
         <div class="upload-panel">
           <div class="upload-panel-header">
             <h5 class="text-white mb-0">
-              <i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload Photo
+              <i class="bi bi-images text-primary me-2"></i>Add Gallery
             </h5>
             <button type="button" class="btn-close btn-close-white" @click="closeUploadModal"></button>
           </div>
@@ -193,6 +202,26 @@
                 </div>
 
                 <div class="mb-3">
+                  <label class="form-label text-white-50 small fw-semibold">Date</label>
+                  <input
+                    type="date"
+                    class="form-control form-control-dark"
+                    v-model="uploadForm.date"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label text-white-50 small fw-semibold">Description</label>
+                  <textarea
+                    class="form-control form-control-dark"
+                    v-model="uploadForm.description"
+                    placeholder="Briefly describe this photo or event..."
+                    rows="3"
+                  ></textarea>
+                </div>
+
+                <div class="mb-3">
                   <label class="form-label text-white-50 small fw-semibold">Category</label>
                   <select class="form-select form-select-dark" v-model="uploadForm.category" required>
                     <option value="" disabled>Select a category</option>
@@ -213,6 +242,117 @@
           </template>
         </div>
       </div>
+
+      <!-- Edit Modal -->
+      <div class="upload-overlay" v-if="showEditModal" @click.self="closeEditModal">
+        <div class="upload-panel">
+          <div class="upload-panel-header">
+            <h5 class="text-white mb-0">
+              <i class="bi bi-pencil text-primary me-2"></i>Edit Photo
+            </h5>
+            <button type="button" class="btn-close btn-close-white" @click="closeEditModal"></button>
+          </div>
+          <form @submit.prevent="handleEdit">
+            <div class="upload-panel-body">
+              <div v-if="editError" class="alert alert-danger py-2 small">{{ editError }}</div>
+              <div v-if="editSuccess" class="alert alert-success py-2 small">{{ editSuccess }}</div>
+
+              <!-- Current / replacement image -->
+              <div class="mb-3">
+                <label class="form-label text-white-50 small fw-semibold">Photo</label>
+                <div
+                  class="upload-dropzone"
+                  :class="{ 'has-file': editForm.newFile, 'is-dragover': isEditDragover }"
+                  @dragover.prevent="isEditDragover = true"
+                  @dragleave.prevent="isEditDragover = false"
+                  @drop.prevent="onEditDrop"
+                >
+                  <input
+                    type="file"
+                    ref="editFileInput"
+                    accept="image/*"
+                    class="d-none"
+                    @change="onEditFileChange"
+                  />
+                  <!-- No new file chosen: show current image -->
+                  <div v-if="!editForm.newFile" class="edit-current-image" @click="$refs.editFileInput.click()">
+                    <img :src="editForm.currentImage" class="edit-current-thumb" :alt="editForm.title" />
+                    <div class="edit-current-hint">
+                      <i class="bi bi-arrow-repeat me-1"></i>Click to replace image
+                    </div>
+                  </div>
+                  <!-- New file chosen -->
+                  <div v-else class="dropzone-preview">
+                    <img :src="editPreview" class="upload-thumb" />
+                    <div class="dropzone-file-info">
+                      <strong class="text-white">{{ editForm.newFile.name }}</strong>
+                      <small class="text-white-50">{{ formatFileSize(editForm.newFile.size) }}</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" @click="removeEditFile">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-white-50 small fw-semibold">Title</label>
+                <input
+                  type="text"
+                  class="form-control form-control-dark"
+                  v-model="editForm.title"
+                  placeholder="e.g. Spring Concert 2026"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-white-50 small fw-semibold">Date</label>
+                <input
+                  type="date"
+                  class="form-control form-control-dark"
+                  v-model="editForm.date"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-white-50 small fw-semibold">Description</label>
+                <textarea
+                  class="form-control form-control-dark"
+                  v-model="editForm.description"
+                  placeholder="Briefly describe this photo or event..."
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-white-50 small fw-semibold">Category</label>
+                <select class="form-select form-select-dark" v-model="editForm.category" required>
+                  <option value="" disabled>Select a category</option>
+                  <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="upload-panel-footer">
+              <button type="button" class="btn btn-outline-light" @click="closeEditModal">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-outline-gold btn-sm"
+                @click="openLightbox(editingPhoto)"
+              >
+                <i class="bi bi-arrows-fullscreen me-1"></i>View Full
+              </button>
+              <button type="submit" class="btn btn-gold px-4" :disabled="editing">
+                <span v-if="editing">
+                  <span class="spinner-border spinner-border-sm me-1"></span>Saving...
+                </span>
+                <span v-else><i class="bi bi-check-lg me-1"></i>Save Changes</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -222,6 +362,13 @@ import { ref, computed, onMounted } from "vue";
 import * as googleDrive from "../services/googleDrive";
 import { authStatus, authError } from "../services/googleDrive";
 import { useAuthStore } from "../stores/auth";
+import {
+  fetchGallery,
+  addGalleryEntry,
+  updateGalleryEntry,
+} from "../services/galleryService";
+
+const IMG_FOLDER_ID = import.meta.env.VITE_GOOGLE_DRIVE_IMG_FOLDER_ID || "";
 
 export default {
   name: "GalleryView",
@@ -244,6 +391,26 @@ export default {
       file: null,
       title: "",
       category: "",
+      date: "",
+      description: "",
+    });
+
+    // --- Edit state ---
+    const showEditModal = ref(false);
+    const editing = ref(false);
+    const editError = ref(null);
+    const editSuccess = ref(null);
+    const editingPhoto = ref(null);
+    const isEditDragover = ref(false);
+    const editFileInput = ref(null);
+    const editPreview = ref(null);
+    const editForm = ref({
+      title: "",
+      date: "",
+      description: "",
+      category: "",
+      currentImage: "",
+      newFile: null,
     });
 
     const categoryOptions = ["Concert", "Rehearsal", "Townhall", "Masterclass"];
@@ -261,7 +428,18 @@ export default {
       loading.value = true;
       error.value = null;
       try {
-        photos.value = await googleDrive.getFiles();
+        const entries = await fetchGallery();
+        // Map Firestore fields to the shape the template expects
+        photos.value = entries.map((e) => ({
+          id: e.id,
+          title: e.title,
+          date: e.date,
+          description: e.description || "",
+          category: e.category,
+          image: e.imageUrl || googleDrive.getThumbUrl(e.driveFileId),
+          imageFull: e.imageFull || googleDrive.getFileUrl(e.driveFileId),
+          driveFileId: e.driveFileId || "",
+        }));
       } catch (err) {
         error.value = err.message || "Failed to load photos";
       } finally {
@@ -317,6 +495,139 @@ export default {
       showUploadModal.value = true;
     }
 
+    // --- Edit helpers ---
+    function onCardClick(photo) {
+      if (authStore.isAdminOrManager) {
+        openEditModal(photo);
+      } else {
+        openLightbox(photo);
+      }
+    }
+
+    function openEditModal(photo) {
+      editingPhoto.value = photo;
+      editForm.value = {
+        title: photo.title || "",
+        date: photo.date || "",
+        description: photo.description || "",
+        category: photo.category || "",
+        currentImage: photo.image || "",
+        newFile: null,
+      };
+      editPreview.value = null;
+      editError.value = null;
+      editSuccess.value = null;
+      showEditModal.value = true;
+    }
+
+    function closeEditModal() {
+      showEditModal.value = false;
+      editingPhoto.value = null;
+      editError.value = null;
+      editSuccess.value = null;
+      editPreview.value = null;
+      if (editFileInput.value) editFileInput.value.value = "";
+      editForm.value = { title: "", date: "", description: "", category: "", currentImage: "", newFile: null };
+    }
+
+    function onEditFileChange(e) {
+      const file = e.target.files[0];
+      if (file) setEditFile(file);
+    }
+
+    function onEditDrop(e) {
+      isEditDragover.value = false;
+      const file = e.dataTransfer.files[0];
+      if (file) setEditFile(file);
+    }
+
+    function setEditFile(file) {
+      if (!file.type.startsWith("image/")) {
+        editError.value = "Please select an image file";
+        return;
+      }
+      if (file.size > 10485760) {
+        editError.value = "File is too large (max 10MB)";
+        return;
+      }
+      editError.value = null;
+      editForm.value.newFile = file;
+      editPreview.value = URL.createObjectURL(file);
+    }
+
+    function removeEditFile() {
+      editForm.value.newFile = null;
+      editPreview.value = null;
+      if (editFileInput.value) editFileInput.value.value = "";
+    }
+
+    async function handleEdit() {
+      if (!editForm.value.title || !editForm.value.category) return;
+      editing.value = true;
+      editError.value = null;
+      editSuccess.value = null;
+      try {
+        let updatedDriveFileId = editingPhoto.value.driveFileId || "";
+        let updatedImage = editingPhoto.value.image;
+        let updatedImageFull = editingPhoto.value.imageFull;
+        let driveLink = updatedDriveFileId
+          ? `https://drive.google.com/file/d/${updatedDriveFileId}/view`
+          : "";
+
+        // If a new file is selected, upload it to the gallery folder on Drive first
+        if (editForm.value.newFile) {
+          const driveResult = await googleDrive.uploadFile(editForm.value.newFile, {
+            title: editForm.value.title,
+            folderId: IMG_FOLDER_ID,
+          });
+          const newDriveFileId = driveResult.id || driveResult.file?.id || "";
+          if (newDriveFileId) {
+            updatedDriveFileId = newDriveFileId;
+            updatedImage = googleDrive.getThumbUrl(newDriveFileId);
+            updatedImageFull = googleDrive.getFileUrl(newDriveFileId);
+            driveLink = `https://drive.google.com/file/d/${newDriveFileId}/view`;
+          } else {
+            updatedImage = editPreview.value;
+            updatedImageFull = editPreview.value;
+          }
+        }
+
+        // Save updated metadata to Firestore
+        await updateGalleryEntry(editingPhoto.value.id, {
+          title: editForm.value.title,
+          date: editForm.value.date,
+          description: editForm.value.description,
+          category: editForm.value.category,
+          driveFileId: updatedDriveFileId,
+          imageUrl: updatedImage,
+          imageFull: updatedImageFull,
+          driveLink,
+        });
+
+        // Update the local list (optimistic)
+        const idx = photos.value.findIndex((p) => p.id === editingPhoto.value.id);
+        if (idx !== -1) {
+          photos.value[idx] = {
+            ...photos.value[idx],
+            title: editForm.value.title,
+            date: editForm.value.date,
+            description: editForm.value.description,
+            category: editForm.value.category,
+            image: updatedImage,
+            imageFull: updatedImageFull,
+            driveFileId: updatedDriveFileId,
+          };
+        }
+
+        editSuccess.value = "Changes saved successfully!";
+        setTimeout(() => closeEditModal(), 1200);
+      } catch (err) {
+        editError.value = err.message || "Failed to save changes";
+      } finally {
+        editing.value = false;
+      }
+    }
+
     async function handleSignIn() {
       try {
         await googleDrive.authenticate();
@@ -338,6 +649,8 @@ export default {
       removeFile();
       uploadForm.value.title = "";
       uploadForm.value.category = "";
+      uploadForm.value.date = "";
+      uploadForm.value.description = "";
     }
 
     async function handleUpload() {
@@ -346,24 +659,49 @@ export default {
       uploadError.value = null;
       uploadSuccess.value = null;
       try {
-        const result = await googleDrive.uploadFile(uploadForm.value.file, {
+        // 1. Upload file to the gallery folder on Google Drive
+        const driveResult = await googleDrive.uploadFile(uploadForm.value.file, {
           title: uploadForm.value.title,
           category: uploadForm.value.category,
+          folderId: IMG_FOLDER_ID,
         });
-        const newPhoto = {
-          id: result.id || result.file?.id,
+
+        const driveFileId = driveResult.id || driveResult.file?.id || "";
+        const imageUrl = driveFileId
+          ? googleDrive.getThumbUrl(driveFileId)
+          : uploadPreview.value;
+        const imageFull = driveFileId
+          ? googleDrive.getFileUrl(driveFileId)
+          : uploadPreview.value;
+        const driveLink = driveFileId
+          ? `https://drive.google.com/file/d/${driveFileId}/view`
+          : "";
+
+        // 2. Save metadata + Drive link to Firestore
+        const firestoreId = await addGalleryEntry({
           title: uploadForm.value.title,
-          image: result.file?.id
-            ? googleDrive.getThumbUrl(result.file.id)
-            : uploadPreview.value,
-          imageFull: result.file?.id
-            ? googleDrive.getFileUrl(result.file.id)
-            : uploadPreview.value,
+          date: uploadForm.value.date || new Date().toISOString().split("T")[0],
+          description: uploadForm.value.description,
           category: uploadForm.value.category,
-          date: new Date().toISOString().split("T")[0],
-        };
-        photos.value.unshift(newPhoto);
-        uploadSuccess.value = "Photo uploaded successfully!";
+          driveFileId,
+          imageUrl,
+          imageFull,
+          driveLink,
+        });
+
+        // 3. Add to local list immediately (optimistic update)
+        photos.value.unshift({
+          id: firestoreId,
+          title: uploadForm.value.title,
+          date: uploadForm.value.date || new Date().toISOString().split("T")[0],
+          description: uploadForm.value.description,
+          category: uploadForm.value.category,
+          image: imageUrl,
+          imageFull,
+          driveFileId,
+        });
+
+        uploadSuccess.value = "Photo uploaded and saved successfully!";
         setTimeout(() => closeUploadModal(), 1500);
       } catch (err) {
         uploadError.value = err.message || "Upload failed";
@@ -408,6 +746,23 @@ export default {
       authStatus,
       authError,
       googleDrive,
+      // edit
+      showEditModal,
+      editing,
+      editError,
+      editSuccess,
+      editingPhoto,
+      editForm,
+      editPreview,
+      isEditDragover,
+      editFileInput,
+      onCardClick,
+      openEditModal,
+      closeEditModal,
+      onEditFileChange,
+      onEditDrop,
+      removeEditFile,
+      handleEdit,
     };
   },
 };
@@ -601,6 +956,11 @@ export default {
   color: rgba(255, 255, 255, 0.35);
 }
 
+.form-control-dark::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.7);
+  cursor: pointer;
+}
+
 .form-select-dark {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -686,4 +1046,59 @@ export default {
     transform: translateY(0);
   }
 }
-</style>
+
+/* Edit button on card */
+.gallery-edit-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 2;
+}
+
+.gallery-card:hover .gallery-edit-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gallery-edit-btn:hover {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+}
+
+/* Edit modal current image preview */
+.edit-current-image {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-current-thumb {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.edit-current-hint {
+  font-size: 0.8rem;
+  color: rgba(255, 215, 0, 0.7);
+}</style>
