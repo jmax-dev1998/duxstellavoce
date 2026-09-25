@@ -33,6 +33,8 @@
           <img
             src="/naksatra_dsv.webp"
             alt="Choir"
+            width="800" height="530"
+            loading="lazy" decoding="async"
             class="img-fluid rounded-3 shadow-lg"
           />
         </div>
@@ -78,10 +80,12 @@
         <div class="row g-0">
           <div class="col-md-4">
             <img
-              src="/art_director.jpg"
+              src="/art_director.webp"
               class="img-fluid h-100 w-100"
               style="object-fit: cover; min-height: 300px;"
               alt="Conductor"
+              width="800" height="450"
+              loading="lazy" decoding="async"
             />
           </div>
           <div class="col-md-8">

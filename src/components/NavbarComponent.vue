@@ -4,10 +4,11 @@
       <router-link class="navbar-brand d-flex align-items-center" to="/">
         <div class="brand-logo-wrapper">
           <img
-            src="/logo_dsv.png"
+            src="/logo_dsv.webp"
             alt="Logo"
             width="40"
             height="40"
+            loading="eager" decoding="async" fetchpriority="high"
             class="d-inline-block align-text-top me-2 brand-logo"
           />
         </div>
@@ -133,8 +134,14 @@ export default {
       }
     };
 
+    let ticking = false;
     const handleScroll = () => {
-      scrolled.value = window.scrollY > 50;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        scrolled.value = window.scrollY > 50;
+        ticking = false;
+      });
     };
 
     const toggleCollapse = () => {

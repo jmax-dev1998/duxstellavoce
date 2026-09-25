@@ -60,7 +60,7 @@
           :key="photo.id"
         >
           <div class="gallery-card" @click="onCardClick(photo)">
-            <img :src="photo.image" :alt="photo.title" />
+            <img :src="photo.image" :alt="photo.title" width="400" height="320" loading="lazy" decoding="async" />
             <div class="gallery-card-overlay">
               <div class="gallery-card-content">
                 <span class="badge bg-primary mb-2">{{ photo.category }}</span>
@@ -100,6 +100,8 @@
                 :src="selectedPhoto.imageFull || selectedPhoto.image"
                 class="img-fluid"
                 :alt="selectedPhoto.title"
+                width="1200" height="800"
+                loading="eager" decoding="async"
                 style="max-height: 75vh; width: 100%; object-fit: contain;"
               />
             </div>
@@ -178,7 +180,7 @@
                       <small class="text-white-50">JPG, PNG, WebP up to 10MB</small>
                     </div>
                     <div v-else class="dropzone-preview">
-                      <img :src="uploadPreview" class="upload-thumb" />
+                      <img :src="uploadPreview" class="upload-thumb" width="64" height="64" loading="lazy" decoding="async" />
                       <div class="dropzone-file-info">
                         <strong class="text-white">{{ uploadForm.file.name }}</strong>
                         <small class="text-white-50">{{ formatFileSize(uploadForm.file.size) }}</small>
@@ -276,14 +278,14 @@
                   />
                   <!-- No new file chosen: show current image -->
                   <div v-if="!editForm.newFile" class="edit-current-image" @click="$refs.editFileInput.click()">
-                    <img :src="editForm.currentImage" class="edit-current-thumb" :alt="editForm.title" />
+                    <img :src="editForm.currentImage" class="edit-current-thumb" :alt="editForm.title" width="400" height="160" loading="lazy" decoding="async" />
                     <div class="edit-current-hint">
                       <i class="bi bi-arrow-repeat me-1"></i>Click to replace image
                     </div>
                   </div>
                   <!-- New file chosen -->
                   <div v-else class="dropzone-preview">
-                    <img :src="editPreview" class="upload-thumb" />
+                    <img :src="editPreview" class="upload-thumb" width="64" height="64" loading="lazy" decoding="async" />
                     <div class="dropzone-file-info">
                       <strong class="text-white">{{ editForm.newFile.name }}</strong>
                       <small class="text-white-50">{{ formatFileSize(editForm.newFile.size) }}</small>

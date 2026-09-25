@@ -1,0 +1,13 @@
+# robots.txt for Dux Stella Voce
+User-agent: *
+Allow: /
+
+# Disallow auth/private pages
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+
+# Crawl-delay optional - uncomment if needed
+# Crawl-delay: 1
+
+Sitemap: https://duxstellavoces.web.app/sitemap.xml

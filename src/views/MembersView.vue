@@ -98,7 +98,7 @@
               <ul v-if="filteredMembers.some(m => m.role === role)" class="member-list">
                 <li v-for="member in filteredMembers.filter(m => m.role === role)" :key="member.id" class="member-list-item">
                   <div class="member-avatar-sm">
-                    <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" />
+                    <img :src="member.image || getDefaultImage(member.name, member.role)" :alt="member.name" width="50" height="50" loading="lazy" decoding="async" />
                   </div>
                   <div class="member-info">
                     <span class="member-name fw-semibold">{{ member.name }}</span>
@@ -143,6 +143,7 @@
                   class="rounded-circle"
                   width="120"
                   height="120"
+                  loading="lazy" decoding="async"
                   style="object-fit: cover; border: 3px solid var(--gold);"
                   :alt="selectedMember.name"
                 />

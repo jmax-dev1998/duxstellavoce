@@ -65,7 +65,7 @@
           <div class="col-lg-6">
             <div class="about-image-wrapper reveal-right">
               <div class="about-image-decoration"></div>
-              <img src="/melcin_dsv.png" alt="Choir Performance"
+              <img src="/melcin_dsv.webp" alt="Choir Performance" width="450" height="259" loading="lazy" decoding="async"
                 class="img-fluid rounded-3 shadow-lg about-image" />
               <div class="about-experience-badge">
                 <span class="display-5 fw-bold primary-gradient-text">4+</span>
@@ -143,7 +143,7 @@
           <div class="col-md-6 mb-4" v-for="event in upcomingEventsSlice" :key="event.id">
             <div class="card event-card border-0 shadow-sm h-100 reveal">
               <div class="event-image-wrapper">
-                <img :src="event.image" class="card-img-top" :alt="event.title" />
+                <img :src="event.image" class="card-img-top" :alt="event.title" width="800" height="400" loading="lazy" decoding="async" />
                 <div class="event-date-badge">
                   <span class="event-day">{{ getDay(event.date) }}</span>
                   <span class="event-month">{{ getMonth(event.date) }}</span>
@@ -193,7 +193,7 @@
             v-for="(photo, i) in galleryScrollItems"
             :key="'g-' + photo.id + '-' + i"
           >
-            <img :src="photo.image" :alt="photo.title" />
+            <img :src="photo.image" :alt="photo.title" width="320" height="280" loading="lazy" decoding="async" />
             <div class="gallery-scroll-overlay">
               <span class="badge bg-primary mb-2">{{ photo.category }}</span>
               <h6 class="mb-1 fw-bold text-white">{{ photo.title }}</h6>
@@ -420,7 +420,8 @@ export default {
 }
 
 .hero-section {
-  background: url("/bg_dsv.jpg") center center / cover no-repeat;
+  background: url("/bg_dsv.webp") center center / cover no-repeat;
+  background-image: image-set(url("/bg_dsv.webp") type("image/webp"), url("/bg_dsv.jpg") type("image/jpeg"));
   position: relative;
   min-height: 100vh;
   margin-top: -76px;

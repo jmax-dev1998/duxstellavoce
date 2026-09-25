@@ -45,6 +45,8 @@
                   :src="event.image || getDefaultImage(event.title, event.tickets)"
                   class="img-fluid h-100 w-100 event-image"
                   :alt="event.title"
+                  width="400" height="220"
+                  loading="lazy" decoding="async"
                 />
                 <div class="event-card-date">
                   <span class="fw-bold fs-5">{{ getDay(event.date) }}</span>
